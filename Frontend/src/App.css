@@ -1,0 +1,28 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+html, body {
+    font-family: 'Poppins', sans-serif;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+#login-page{
+    background: rgb(19,19,153);
+    background: -moz-linear-gradient(142deg, rgba(19,19,153,1) 8%, rgba(36,29,179,1) 31%, rgba(90,217,255,1) 84%);
+    background: -webkit-linear-gradient(142deg, rgba(19,19,153,1) 8%, rgba(36,29,179,1) 31%, rgba(90,217,255,1) 84%);
+    background: linear-gradient(142deg, rgba(19,19,153,1) 8%, rgba(36,29,179,1) 31%, rgba(90,217,255,1) 84%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#131399",endColorstr="#5ad9ff",GradientType=1);
+}
+
+#login-container{
+    width: 40em;
+    height: 30em;
+    padding: 1.5em;
+
+    background: rgba(255, 255, 255, 0.175);
+    border-radius: 20px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border: 1px solid rgba(255, 255, 255, 0.33);
+}
