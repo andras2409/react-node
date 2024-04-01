@@ -7,13 +7,14 @@ import {
     ItemClicked, 
     IncreaseItemAmount, 
     DecreaseItemAmount, 
-    DeleteBasket, 
-    DeleteItem, 
-    DeleteNumbers,
-    BanknoteClicked,
+    DeleteItem,
+    DeleteBasket,
     CashPayment,
     CreditPayment,
-    KeypadClicked
+    SaveItems,
+    DeleteNumbers,
+    DeleteLocalStorage,
+    BanknoteClicked
 } from '../../Backend/calculator.js'
 import Trash from './components/Trash.jsx';
 import Keypad from './components/Keypad.jsx';
@@ -30,78 +31,109 @@ function Buffet() {
     }, [])
 
     const [products, setProducts] = useState([]);    
-    const [currentPage, setCurrentPage] = useState('Buffet');
+    const [currentPage, setCurrentPage] = useState('Buffet');    
 
     const [basket, setBasket] = useState([]);
     const [price, setPrice] = useState(0);
-    const [amountReceived, setAmountReceived] = useState(0);
     const [change, setChange] = useState(0);
-    const [banknoteClicked, setBanknoteClicked] = useState(false);
-    const [displayPrice, setDisplayPrice] = useState();
-    const [transactionOngoing, setTransactionOngoing] = useState(true);
-    const [displayTrasnaction, setDisplayTransaction] = useState('');
-    const [paymentMethod, setPaymentMethod] = useState('');
-    const [displayAmount, setDisplayAmount] = useState(0);
-    const [isItemClicked, setIsItemClicked] = useState(false);
+    const [transactionInprogress, setTransactionInprogress] = useState(false);
+    const [itemIsClicked, setItemIsClicked] = useState(true);
     const [itemClicked, setItemClicked] = useState(null);
-    const [paymentSuccessful, setPaymentSuccessful] = useState(false);
-    const [transactionNumber, setTransactionNumber] = useState(0);
+    const [amountReceived, setAmountReceived] = useState(0);
+    const [banknoteWasClicked, setBanknoteWasClicked] = useState(false);
+    const [paymentMethod, setPaymentMethod] = useState('');
 
+    //--------Displays--------//
+    const [displayAmount, setDisplayAmount] = useState(0);
+    const [displayPrice, setDisplayPrice] = useState(0);
+    const [displayTrasnaction, setDisplayTransaction] = useState('');
+    
+    //--------localStorage--------//
     const [totalItemList, setTotalItemList] = useState(() => JSON.parse(localStorage.getItem('totalItemList')) || []);
     const [totalCash, setTotalCash] = useState(() => JSON.parse(localStorage.getItem('totalCash')) || 0);
     const [totalCredit, setTotalCredit] = useState(() => JSON.parse(localStorage.getItem('totalCredit')) || 0);
 
-    const [amountWithdrawn, setAmountWithdrawn] = useState(0);
-    const [totalAmountWithdrawn, setTotalAmountWithdran] = useState(() => JSON.parse(localStorage.getItem('totalAmountWithdrawn')) || 0);
-    const [withdrawal, setwithdrawal] = useState(false);
+    //--------Withdrawal--------//
+    const [withdrawal, setWithdrawal] = useState(false);
+    const [currentWithdrawalAmount, setCurrentWithdrawalAmount] = useState(0);
+    const [totalWithdrawal, setTotalWithdrawal] = useState(() => JSON.parse(localStorage.getItem('totalWithdrawal')) || 0);
 
-    const [depositAmount, setDepositAmount] = useState(0);
+    //--------Debit--------//
     const [deposit, setDeposit] = useState(false);
-    const [totalDepositAmount, setTotalDepositAmount] = useState(() => JSON.parse(localStorage.getItem('totalDepositAmount')) || 0);
+    const [currentDeposit, setCurrentDeposit] = useState(0);
+    const [totalDeposit, setTotalDeposit] = useState(() => JSON.parse(localStorage.getItem('totalDeposit')) || 0);
+
+    useEffect(() => {
+        localStorage.setItem('totalCash', JSON.stringify(totalCash));
+        localStorage.setItem('totalCredit', JSON.stringify(totalCredit));
+        localStorage.setItem('totalItemList', JSON.stringify(totalItemList));
+        localStorage.setItem('totalWithdrawal', JSON.stringify(totalWithdrawal));
+        localStorage.setItem('totalDeposit', JSON.stringify(totalDeposit));
+    }, [totalCash, totalCredit, totalItemList, totalWithdrawal, totalDeposit]);
 
     function HandleItemClicked(newItem) {
-        if (!transactionOngoing) {
-            DeleteBasket(setBasket, setPrice, setAmountReceived, setChange, setDisplayTransaction, setDisplayAmount, setPaymentMethod, setPaymentSuccessful);
+        if (!transactionInprogress && paymentMethod === '') {
+            setTransactionInprogress(true);
+            setPaymentMethod('');
+            setItemClicked(newItem);
+            setItemIsClicked(true);
+        } else if (transactionInprogress && paymentMethod === '') {
+            setItemClicked(newItem);
+            setItemIsClicked(true);
         }
-        
-        setItemClicked(newItem);
-        setIsItemClicked(true);
-        setTransactionOngoing(true);
-    };
-
-    function DeleteLocalStorage() {
-        localStorage.clear();
+        if (!transactionInprogress && paymentMethod === 'cash' || paymentMethod === 'credit') {
+            setTransactionInprogress(true);
+            setPaymentMethod('');
+            setItemClicked(newItem);
+            setItemIsClicked(true);
+            DeleteBasket(setBasket, setDisplayTransaction, setPrice, setAmountReceived, setPaymentMethod, setChange, setBanknoteWasClicked);
+        }
     }
 
-    function Deposit() {
-        if (amountReceived > 0) {
-            setDeposit(true);
-            setDepositAmount(amountReceived);
+    function HandleKeypadClicked(e) {
+        let key = e.target.value;
+        if (!banknoteWasClicked) {
+            if (transactionInprogress && paymentMethod === '') {
+                if (amountReceived === 0) {
+                    setAmountReceived(key);
+                } else {
+                    setAmountReceived(amountReceived + key);
+                }
+            }
+            if (!transactionInprogress) {
+                if (paymentMethod !== '') {
+                    setTransactionInprogress(true);
+                    DeleteBasket(setBasket, setDisplayTransaction, setPrice, setAmountReceived, setPaymentMethod, setChange, setBanknoteWasClicked);
+                    setAmountReceived(key);
+                } else {
+                    if (amountReceived === 0) {
+                        setAmountReceived(key);
+                    } else {
+                        setAmountReceived(amountReceived + key);
+                    }
+                }
+            }
+        } else {
+            if (transactionInprogress && paymentMethod === '') {
+                if (amountReceived === 0) {
+                    setAmountReceived(key);
+                } else {
+                    setAmountReceived(amountReceived + key);
+                }
+            }
+            if (!transactionInprogress && paymentMethod !== '') {
+                setTransactionInprogress(true);
+                DeleteBasket(setBasket, setDisplayTransaction, setPrice, setAmountReceived, setPaymentMethod, setChange, setBanknoteWasClicked);
+                setAmountReceived(key);
+            }
         }
     }
 
     function Withdrawal() {
         if (amountReceived > 0) {
-            setAmountWithdrawn(amountReceived)
-            setwithdrawal(true);
-        }
-    }
-
-    useEffect(() => {
-        const isWithdrawPossible = withdrawal && (parseInt(totalCash) - (parseInt(totalAmountWithdrawn) + parseInt(amountWithdrawn))) >= 0;
-        if (isWithdrawPossible && !paymentSuccessful && transactionOngoing) {
-            localStorage.setItem('totalAmountWithdrawn', JSON.stringify(parseInt(parseInt(totalAmountWithdrawn) + parseInt(amountWithdrawn))));
-            setDisplayTransaction(
-                <ul className='list-group'>
-                    <li className='list-group-item bg-success-subtle d-flex'>
-                        <div className='col-6'>Amount Withdrawn:</div>
-                        <div>{amountWithdrawn}</div>
-                    </li>
-                </ul>
-            );
-            setAmountWithdrawn(0);
-            setwithdrawal(false);
-        } else if (withdrawal) {
+            setWithdrawal(true);
+            setCurrentWithdrawalAmount(amountReceived);
+        } else {
             setDisplayTransaction(
                 <ul className='list-group'>
                     <li className='list-group-item bg-danger-subtle d-flex'>
@@ -109,25 +141,17 @@ function Buffet() {
                     </li>
                 </ul>
             );
-            setAmountWithdrawn(0);
-            setwithdrawal(false);
+            setWithdrawal(false);
+            setCurrentWithdrawalAmount(0);
+            DeleteNumbers(transactionInprogress, paymentMethod, setAmountReceived)
         }
-    });
+    }
 
-    useEffect(() => {
-        if (deposit && depositAmount > 0 && !paymentSuccessful && transactionOngoing && price === 0) {
-            localStorage.setItem('totalDepositAmount', JSON.stringify(parseInt(totalDepositAmount) + parseInt(depositAmount)));
-            setDisplayTransaction(
-                <ul className='list-group'>
-                    <li className='list-group-item bg-success-subtle d-flex'>
-                        <div className='col-6'>Deposit:</div>
-                        <div>{depositAmount}</div>
-                    </li>
-                </ul>
-            );
-            setDeposit(false);
-            setDepositAmount(0);
-        } else if (paymentSuccessful && !transactionOngoing) {
+    function Deposit() {
+        if (amountReceived > 0) {
+            setDeposit(true);
+            setCurrentDeposit(amountReceived);
+        } else {
             setDisplayTransaction(
                 <ul className='list-group'>
                     <li className='list-group-item bg-danger-subtle d-flex'>
@@ -136,113 +160,216 @@ function Buffet() {
                 </ul>
             );
             setDeposit(false);
-            setDisplayAmount(0);
-        }
-    }, [deposit, depositAmount, totalDepositAmount]);
-
-    function SaveItems(basket, totalItemList) {
-        for (let i = 0; i < basket.length; i++) {
-            totalItemList.push(basket[i]);
+            setCurrentDeposit(0);
+            DeleteNumbers(transactionInprogress, paymentMethod, setAmountReceived);
         }
     }
 
     useEffect(() => {
-        localStorage.setItem('totalCash', JSON.stringify(totalCash));
-        localStorage.setItem('totalCredit', JSON.stringify(totalCredit));
-        localStorage.setItem('totalItemList', JSON.stringify(totalItemList));
-    }, [totalCash, totalCredit, totalItemList]);
+        console.log('tranInprog:'+transactionInprogress);
+        console.log('paymentMethod:'+paymentMethod);
+        console.log('deposit:'+deposit);
+    });
 
     useEffect(() => {
-        if (transactionOngoing && isItemClicked && itemClicked != null) {
+        if (deposit) {
+            if (transactionInprogress && paymentMethod === '') {
+                setDisplayTransaction(
+                    <ul className='list-group'>
+                        <li className='list-group-item bg-danger-subtle d-flex'>
+                            <div className='col-6'>Deposit Not Possible</div>
+                        </li>
+                    </ul>
+                );
+                setDeposit(false);
+                setCurrentDeposit(0);
+                DeleteNumbers(transactionInprogress, paymentMethod, setAmountReceived);
+            }
+            if (!transactionInprogress) {
+                if (paymentMethod === '') {
+                    setTotalDeposit(parseInt(totalDeposit) + parseInt(currentDeposit));
+                    setDisplayTransaction(
+                        <ul className='list-group'>
+                            <li className='list-group-item bg-success-subtle d-flex'>
+                                <div className='col-6'>Deposit:</div>
+                                <div>{currentDeposit}</div>
+                            </li>
+                        </ul>
+                    );
+                    setDeposit(false);
+                    setCurrentDeposit(0);
+                    DeleteNumbers(transactionInprogress, paymentMethod, setAmountReceived);
+                } else {
+                    setDisplayTransaction(
+                        <ul className='list-group'>
+                            <li className='list-group-item bg-danger-subtle d-flex'>
+                                <div className='col-6'>Deposit Not Possible</div>
+                            </li>
+                        </ul>
+                    );
+                    setDeposit(false);
+                    setCurrentDeposit(0);
+                    DeleteNumbers(transactionInprogress, paymentMethod, setAmountReceived);
+                }
+            }
+        }
+    },[deposit, totalDeposit, currentDeposit, transactionInprogress, paymentMethod]);
+
+    useEffect(() => {
+        if (withdrawal) {
+            if (parseInt(totalCash) >= parseInt(totalWithdrawal) + parseInt(currentWithdrawalAmount)) {
+                if (transactionInprogress && paymentMethod === '') {
+                    if (price === 0) {
+                        setTotalWithdrawal(parseInt(totalWithdrawal) + parseInt(currentWithdrawalAmount));
+                        setDisplayTransaction(
+                            <ul className='list-group'>
+                                <li className='list-group-item bg-success-subtle d-flex'>
+                                    <div className='col-6'>Amount Withdrawn:</div>
+                                    <div>{currentWithdrawalAmount}</div>
+                                </li>
+                            </ul>
+                        );
+                        setWithdrawal(false);
+                        setCurrentWithdrawalAmount(0);
+                        DeleteNumbers(transactionInprogress, paymentMethod, setAmountReceived);
+                    } else {
+                        setDisplayTransaction(
+                            <ul className='list-group'>
+                                <li className='list-group-item bg-danger-subtle d-flex'>
+                                    <div className='col-6'>Withdraw Not Possible</div>
+                                </li>
+                            </ul>
+                        );
+                        setWithdrawal(false);
+                        setCurrentWithdrawalAmount(0);
+                        DeleteNumbers(transactionInprogress, paymentMethod, setAmountReceived);
+                    }
+                    
+                }
+                if (!transactionInprogress) {
+                    if (paymentMethod === '') {
+                        setTotalWithdrawal(parseInt(totalWithdrawal) + parseInt(currentWithdrawalAmount));
+                        setDisplayTransaction(
+                            <ul className='list-group'>
+                                <li className='list-group-item bg-success-subtle d-flex'>
+                                    <div className='col-6'>Amount Withdrawn:</div>
+                                    <div>{currentWithdrawalAmount}</div>
+                                </li>
+                            </ul>
+                        );
+                        setWithdrawal(false);
+                        setCurrentWithdrawalAmount(0);
+                        DeleteNumbers(transactionInprogress, paymentMethod, setAmountReceived);
+                    } else {
+                        setDisplayTransaction(
+                            <ul className='list-group'>
+                                <li className='list-group-item bg-danger-subtle d-flex'>
+                                    <div className='col-6'>Withdraw Not Possible</div>
+                                </li>
+                            </ul>
+                        );
+                        setWithdrawal(false);
+                        setCurrentWithdrawalAmount(0);
+                        DeleteNumbers(transactionInprogress, paymentMethod, setAmountReceived);
+                    }
+                }
+            } else {
+                setDisplayTransaction(
+                    <ul className='list-group'>
+                        <li className='list-group-item bg-danger-subtle d-flex'>
+                            <div className='col-6'>Withdraw Not Possible</div>
+                        </li>
+                    </ul>
+                );
+                setWithdrawal(false);
+                setCurrentWithdrawalAmount(0);
+                DeleteNumbers(transactionInprogress, paymentMethod, setAmountReceived);
+            }
+        }
+    },[withdrawal, transactionInprogress, paymentMethod, totalCash, totalWithdrawal, currentWithdrawalAmount]);
+
+    useEffect(() => {
+        if (transactionInprogress && itemIsClicked && itemClicked != null) {
             ItemClicked(itemClicked, basket, price);
             setBasket([...basket]);
             setPrice(price + parseInt(itemClicked.price));
         }
         setItemClicked(null);
-    },[itemClicked, isItemClicked, basket, price, transactionOngoing]);
-
-    /*useEffect(() => {
-        if (paymentSuccessful) {
-            setPaymentSuccessful(false);
-            setAmountReceived(0);
-        }
-    });*/
-
-    useEffect(() => {
-        console.log('paymetsucces:'+paymentSuccessful);
-        console.log('transactionOngoing:'+transactionOngoing);
-    });
-
-    useEffect(() => {
-        setDisplayAmount(amountReceived);
-    }, [amountReceived]);
-
-    useEffect(() => {
-        setDisplayPrice(`${price}`);
-        if (!transactionOngoing && paymentMethod === 'Cash') {
-            setDisplayTransaction(
-                <>
-                    <ul className='list-group'>
-                        <li className='list-group-item bg-success-subtle d-flex'>
-                            <div className='col-6'>Payment Method:</div>
-                            <div>{paymentMethod}</div>
-                        </li>
-                        <li className='list-group-item bg-success-subtle d-flex'>
-                            <div className='col-6'>Price:</div>
-                            <div>{price}</div>
-                        </li>
-                        <li className='list-group-item bg-success-subtle d-flex'>
-                            <div className='col-6'>Amount Received:</div>
-                            <div>{amountReceived}</div>
-                        </li>
-                        <li className='list-group-item bg-success-subtle d-flex'>
-                            <div className='col-6'>Change:</div>
-                            <div>{change}</div>
-                        </li>
-                    </ul> 
-                </>
-            );
-            setDisplayAmount(`Change: ${change}`);
-            setPaymentSuccessful(true);
-            SaveItems(basket, totalItemList);
-            setTotalCash(totalCash + price);
-        }
-        if (!transactionOngoing && paymentMethod === 'Credit') {
-            setDisplayTransaction(
-                <>
-                    <ul className='list-group'>
-                        <li className='list-group-item bg-success-subtle'>Payment Method: {paymentMethod}</li>
-                        <li className='list-group-item bg-success-subtle'>Price: {price}</li>
-                    </ul> 
-                </>
-            );
-            setDisplayAmount(`Credit: ${price}`);
-            SaveItems(basket, totalItemList);
-            setTotalCredit(totalCredit + price);
-        }
-        if (transactionOngoing && isItemClicked){
-            setDisplayTransaction(
-                <ul className={'list-group'}>
-                    {basket.map((item, index) => (
-                        <li className={'list-group-item d-flex justify-content-between p-1'} key={index}>
-                            <div className='d-flex justify-content-center align-items-center'>
-                                {item.name}
+        setDisplayPrice(price);
+        setDisplayTransaction(
+            <ul className={'list-group'}>
+                {basket.map((item, index) => (
+                    <li className={'list-group-item d-flex justify-content-between p-1'} key={index}>
+                        <div className='d-flex justify-content-center align-items-center'>
+                            {item.name}
+                        </div>
+                        <div className='btn-group col-6'>
+                            <div className='d-flex col-8'>
+                                <button className='btn btn-secondary' onClick={() => DecreaseItemAmount(index, basket, setBasket, price, setPrice)}>-</button>
+                                <div className='d-flex justify-content-center align-items-center p-3 pt-2 pb-2 col-4'>{item.amount}</div>
+                                <button className='btn btn-secondary' onClick={() => IncreaseItemAmount(index, price, basket, setBasket, setPrice)}>+</button>
                             </div>
-                            <div className='btn-group col-6'>
-                                <div className='d-flex col-8'>
-                                    <button className='btn btn-secondary' onClick={() => DecreaseItemAmount(index, basket, setBasket, price, setPrice)}>-</button>
-                                    <div className='d-flex justify-content-center align-items-center p-3 pt-2 pb-2 col-4'>{item.amount}</div>
-                                    <button className='btn btn-secondary' onClick={() => IncreaseItemAmount(index, price, basket, setBasket, setPrice)}>+</button>
-                                </div>
-                                <Trash divClass={'d-flex justify-content-center col-4'} onClick={() => DeleteItem(index, setBasket, basket, setPrice, price)}/>
-                            </div>
-                        </li>
-                    ))}
-                </ul>
-            );
+                            <Trash divClass={'d-flex justify-content-center col-4'} onClick={() => DeleteItem(index, setBasket, basket, setPrice, price)}/>
+                        </div>
+                    </li>
+                ))}
+            </ul>
+        );
+    },[transactionInprogress, itemIsClicked, itemClicked, basket, price]);
+
+    useEffect(() => {
+        if (!transactionInprogress && price === 0) {
+            setDisplayPrice(price);
             setDisplayAmount(amountReceived);
+        } else if (transactionInprogress) {
+            setDisplayPrice(price);
+            setDisplayAmount(amountReceived);
+        } else {
+            setDisplayPrice(price);
+            setDisplayAmount('Change: ' + change);
         }
-    }, [price, transactionOngoing, change, amountReceived, paymentMethod, basket]);
+
+        if (!transactionInprogress) {
+            if (paymentMethod === 'cash') {
+                SaveItems(basket, totalItemList);
+                setTotalCash(totalCash + price);
+                setDisplayTransaction(
+                    <>
+                        <ul className='list-group'>
+                            <li className='list-group-item bg-success-subtle d-flex'>
+                                <div className='col-6'>Payment Method:</div>
+                                <div>{paymentMethod}</div>
+                            </li>
+                            <li className='list-group-item bg-success-subtle d-flex'>
+                                <div className='col-6'>Price:</div>
+                                <div>{price}</div>
+                            </li>
+                            <li className='list-group-item bg-success-subtle d-flex'>
+                                <div className='col-6'>Amount Received:</div>
+                                <div>{amountReceived}</div>
+                            </li>
+                            <li className='list-group-item bg-success-subtle d-flex'>
+                                <div className='col-6'>Change:</div>
+                                <div>{change}</div>
+                            </li>
+                        </ul> 
+                    </>
+                );
+            }
+            if (paymentMethod === 'credit') {
+                SaveItems(basket, totalItemList);
+                setTotalCredit(totalCredit + price);
+                setDisplayTransaction(
+                    <>
+                        <ul className='list-group'>
+                            <li className='list-group-item bg-success-subtle'>Payment Method: {paymentMethod}</li>
+                            <li className='list-group-item bg-success-subtle'>Price: {price}</li>
+                        </ul> 
+                    </>
+                );
+            }
+        }
+    },[price, amountReceived, transactionInprogress, change]);
 
     if (currentPage === 'back-to-main') {
         return <MainMenu />;
@@ -277,7 +404,7 @@ function Buffet() {
                             <ProductGroup divClass={'d-flex flex-wrap col-6'} className={'btn btn-warning col-3 flex-fill m-1'} items={products.filter(products => products.type === 'snack')} onClick={HandleItemClicked}/>
                         </div>
                     </div>
-                    <BankNoteButtons onClick={(e) => BanknoteClicked(e, setBanknoteClicked, setAmountReceived, setTransactionOngoing, setPaymentMethod, setChange, price, setPaymentSuccessful, setTransactionNumber, transactionNumber, transactionOngoing, amountReceived)} />
+                    <BankNoteButtons onClick={(e) => BanknoteClicked(e, transactionInprogress, price, setBanknoteWasClicked, setAmountReceived, setChange, setTransactionInprogress, setPaymentMethod, paymentMethod, setBasket, setPrice, setDisplayTransaction)} />
                 </div>
                 <div className='col-3 d-flex flex-column flex-fill justify-content-between bg-secondary bg-gradient'>
                     <div className='bg-dark text-white d-flex justify-content-center fs-3 fw-bold'>
@@ -291,7 +418,7 @@ function Buffet() {
                     </div>
                     <div className="d-flex justify-content-around">
                         <div className='col-4 p-1 pt-0 pb-0 d-flex'>
-                            <Button className={'btn btn-primary flex-fill fs-6'} onClick={() => DeleteNumbers(setAmountReceived, transactionOngoing)}>Delete Number</Button>
+                            <Button className={'btn btn-primary flex-fill fs-6'} onClick={() => DeleteNumbers(transactionInprogress, paymentMethod, setAmountReceived)}>Delete Number</Button>
                         </div>
                         <div className='col-4 p-1 pt-0 pb-0 d-flex'>
                             <Button className={'btn btn-primary flex-fill fs-6'} onClick={() => Withdrawal()}>WD</Button>
@@ -301,9 +428,9 @@ function Buffet() {
                         </div>
                     </div>
                     <Keypad 
-                        keypad={(e) => KeypadClicked(e, banknoteClicked, setAmountReceived, setBanknoteClicked, amountReceived, setDisplayAmount, transactionOngoing, setBasket, setPrice, setChange, setDisplayTransaction, setPaymentMethod, setPaymentSuccessful, setTransactionOngoing)}
-                        cash={() => CashPayment(setTransactionOngoing, setPaymentMethod, setChange, amountReceived, price, setPaymentSuccessful, setTransactionNumber, transactionNumber, setAmountReceived)}
-                        credit={() => CreditPayment(setTransactionOngoing, setPaymentMethod, setChange, setPaymentSuccessful, transactionOngoing, price)}
+                        keypad={(e) => HandleKeypadClicked(e)}
+                        cash={() => CashPayment(price, amountReceived, setChange, setTransactionInprogress, setPaymentMethod)}
+                        credit={() => CreditPayment(setTransactionInprogress, setPaymentMethod, price)}
                     />
                 </div>
                 <div className='d-flex flex-column justify-content-between col-1 bg-dark p-2'>
@@ -312,7 +439,7 @@ function Buffet() {
                         <Button id={'back-to-main'} className={'btn btn-outline-primary m-2 p-2 fs-5'} onClick={() => setCurrentPage('summary')}>Summary</Button>
                     </DropdownButton>
                     <div>
-                        <Button className={'btn btn-primary fs-6 m-1'} onClick={() => DeleteBasket(setBasket, setPrice, setAmountReceived, setChange, setDisplayTransaction, setDisplayAmount, setPaymentMethod, setPaymentSuccessful)}>Delete Basket</Button>
+                        <Button className={'btn btn-primary fs-6 m-1'} onClick={() => DeleteBasket(setBasket, setDisplayTransaction, setPrice, setAmountReceived, setPaymentMethod, setChange, setBanknoteWasClicked)}>Delete Basket</Button>
                         <Button className={'btn btn-primary fs-6 m-1'} onClick={() => DeleteLocalStorage()}>Delete Storage</Button>
                     </div>
                 </div>
