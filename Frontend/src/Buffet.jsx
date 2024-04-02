@@ -7,15 +7,17 @@ import {
     ItemClicked, 
     IncreaseItemAmount, 
     DecreaseItemAmount, 
-    DeleteItem,
-    DeleteBasket,
-    CashPayment,
-    CreditPayment,
-    SaveItems,
-    DeleteNumbers,
-    DeleteLocalStorage,
-    BanknoteClicked
-} from '../../Backend/calculator.js'
+    DeleteItem, 
+    DeleteBasket, 
+    CashPayment, 
+    CreditPayment, 
+    SaveItems, 
+    DeleteNumbers, 
+    DeleteLocalStorage, 
+    BanknoteClicked,
+    HandleKeypadClicked,
+    HandleItemClicked
+} from '../../Backend/calculator.js';
 import Trash from './components/Trash.jsx';
 import Keypad from './components/Keypad.jsx';
 import BankNoteButtons from './components/BankNoteButtons.jsx';
@@ -71,62 +73,22 @@ function Buffet() {
         localStorage.setItem('totalDeposit', JSON.stringify(totalDeposit));
     }, [totalCash, totalCredit, totalItemList, totalWithdrawal, totalDeposit]);
 
-    function HandleItemClicked(newItem) {
-        if (!transactionInprogress && paymentMethod === '') {
-            setTransactionInprogress(true);
-            setPaymentMethod('');
-            setItemClicked(newItem);
-            setItemIsClicked(true);
-        } else if (transactionInprogress && paymentMethod === '') {
-            setItemClicked(newItem);
-            setItemIsClicked(true);
-        }
-        if (!transactionInprogress && paymentMethod === 'cash' || paymentMethod === 'credit') {
-            setTransactionInprogress(true);
-            setPaymentMethod('');
-            setItemClicked(newItem);
-            setItemIsClicked(true);
-            DeleteBasket(setBasket, setDisplayTransaction, setPrice, setAmountReceived, setPaymentMethod, setChange, setBanknoteWasClicked);
-        }
-    }
-
-    function HandleKeypadClicked(e) {
-        let key = e.target.value;
-        if (!banknoteWasClicked) {
-            if (transactionInprogress && paymentMethod === '') {
-                if (amountReceived === 0) {
-                    setAmountReceived(key);
-                } else {
-                    setAmountReceived(amountReceived + key);
-                }
-            }
-            if (!transactionInprogress) {
-                if (paymentMethod !== '') {
-                    setTransactionInprogress(true);
-                    DeleteBasket(setBasket, setDisplayTransaction, setPrice, setAmountReceived, setPaymentMethod, setChange, setBanknoteWasClicked);
-                    setAmountReceived(key);
-                } else {
-                    if (amountReceived === 0) {
-                        setAmountReceived(key);
-                    } else {
-                        setAmountReceived(amountReceived + key);
-                    }
-                }
-            }
-        } else {
-            if (transactionInprogress && paymentMethod === '') {
-                if (amountReceived === 0) {
-                    setAmountReceived(key);
-                } else {
-                    setAmountReceived(amountReceived + key);
-                }
-            }
-            if (!transactionInprogress && paymentMethod !== '') {
-                setTransactionInprogress(true);
-                DeleteBasket(setBasket, setDisplayTransaction, setPrice, setAmountReceived, setPaymentMethod, setChange, setBanknoteWasClicked);
-                setAmountReceived(key);
-            }
-        }
+    function genericHandleItemClicked(newItem) {
+        HandleItemClicked( 
+            newItem, 
+            transactionInprogress, 
+            paymentMethod, 
+            setTransactionInprogress, 
+            setPaymentMethod, 
+            setItemClicked, 
+            setItemIsClicked, 
+            setBasket, 
+            setDisplayTransaction, 
+            setPrice, 
+            setAmountReceived, 
+            setChange, 
+            setBanknoteWasClicked
+        );
     }
 
     function Withdrawal() {
@@ -166,24 +128,34 @@ function Buffet() {
     }
 
     useEffect(() => {
-        console.log('tranInprog:'+transactionInprogress);
-        console.log('paymentMethod:'+paymentMethod);
-        console.log('deposit:'+deposit);
-    });
-
-    useEffect(() => {
         if (deposit) {
             if (transactionInprogress && paymentMethod === '') {
-                setDisplayTransaction(
-                    <ul className='list-group'>
-                        <li className='list-group-item bg-danger-subtle d-flex'>
-                            <div className='col-6'>Deposit Not Possible</div>
-                        </li>
-                    </ul>
-                );
-                setDeposit(false);
-                setCurrentDeposit(0);
-                DeleteNumbers(transactionInprogress, paymentMethod, setAmountReceived);
+                if (price === 0) {
+                    setTotalDeposit(parseInt(totalDeposit) + parseInt(currentDeposit));
+                    setDisplayTransaction(
+                        <ul className='list-group'>
+                            <li className='list-group-item bg-success-subtle d-flex'>
+                                <div className='col-6'>Deposit:</div>
+                                <div>{currentDeposit}</div>
+                            </li>
+                        </ul>
+                    );
+                    setDeposit(false);
+                    setCurrentDeposit(0);
+                    DeleteNumbers(transactionInprogress, paymentMethod, setAmountReceived);
+                } else {
+                    setDisplayTransaction(
+                        <ul className='list-group'>
+                            <li className='list-group-item bg-danger-subtle d-flex'>
+                                <div className='col-6'>Deposit Not Possible</div>
+                            </li>
+                        </ul>
+                    );
+                    setDeposit(false);
+                    setCurrentDeposit(0);
+                    DeleteNumbers(transactionInprogress, paymentMethod, setAmountReceived);
+                }
+                
             }
             if (!transactionInprogress) {
                 if (paymentMethod === '') {
@@ -213,7 +185,7 @@ function Buffet() {
                 }
             }
         }
-    },[deposit, totalDeposit, currentDeposit, transactionInprogress, paymentMethod]);
+    },[deposit, totalDeposit, currentDeposit, transactionInprogress, paymentMethod, price]);
 
     useEffect(() => {
         if (withdrawal) {
@@ -384,24 +356,24 @@ function Buffet() {
                     <div className='d-flex flex-column flex-fill col-11'>
                         <div className="d-flex col-12">
                             <div className='col-8'>
-                                <ProductGroup divClass={'d-flex'} className={'btn btn-primary col-1 m-1 p-2 flex-fill'} items={products.filter(products => products.type === 'popcorn')} onClick={HandleItemClicked}/>
-                                <ProductGroup divClass={'d-flex'} className={'btn bg-primary-subtle col-1 m-1 p-2 flex-fill'} items={products.filter(products => products.type === 'popcornmenu')} onClick={HandleItemClicked}/>
-                                <ProductGroup divClass={'d-flex'} className={'btn bg-danger-subtle col-1 m-1 p-2 flex-fill'} items={products.filter(products => products.type === 'pepsidrink')} onClick={HandleItemClicked}/>
-                                <ProductGroup divClass={'d-flex'} className={'btn btn-primary col-1 m-1 p-2 flex-fill'} items={products.filter(products => products.type === 'nachos')} onClick={HandleItemClicked}/>
-                                <ProductGroup divClass={'d-flex'} className={'btn bg-primary-subtle col-1 m-1 p-2 flex-fill'} items={products.filter(products => products.type === 'nachosmenu')} onClick={HandleItemClicked}/>
+                                <ProductGroup  divClass={'d-flex'} className={'btn btn-primary col-1 m-1 p-2 flex-fill'} items={products.filter(products => products.type === 'popcorn')} onClick={(e) => genericHandleItemClicked(e)}/>
+                                <ProductGroup divClass={'d-flex'} className={'btn bg-primary-subtle col-1 m-1 p-2 flex-fill'} items={products.filter(products => products.type === 'popcornmenu')} onClick={(e) => genericHandleItemClicked(e)}/>
+                                <ProductGroup divClass={'d-flex'} className={'btn bg-danger-subtle col-1 m-1 p-2 flex-fill'} items={products.filter(products => products.type === 'pepsidrink')} onClick={(e) => genericHandleItemClicked(e)}/>
+                                <ProductGroup divClass={'d-flex'} className={'btn btn-primary col-1 m-1 p-2 flex-fill'} items={products.filter(products => products.type === 'nachos')} onClick={(e) => genericHandleItemClicked(e)}/>
+                                <ProductGroup divClass={'d-flex'} className={'btn bg-primary-subtle col-1 m-1 p-2 flex-fill'} items={products.filter(products => products.type === 'nachosmenu')} onClick={(e) => genericHandleItemClicked(e)}/>
                             </div>
-                            <ProductGroup divClass={'col-2 d-flex flex-column'} className={'btn btn-dark flex-fill m-1'} items={products.filter(products => products.type === 'extra')} onClick={HandleItemClicked}/>
+                            <ProductGroup divClass={'col-2 d-flex flex-column'} className={'btn btn-dark flex-fill m-1'} items={products.filter(products => products.type === 'extra')} onClick={(e) => genericHandleItemClicked(e)}/>
                             <div className='d-flex flex-column col-2'>
-                                <ProductGroup divClass={'col d-flex flex-column'} className={'btn btn-secondary flex-fill m-1'} items={products.filter(products => products.type === 'snackgram')} onClick={HandleItemClicked}/>
-                                <ProductGroup divClass={'col d-flex flex-column'} className={'btn btn-secondary flex-fill m-1'} items={products.filter(products => products.type === 'energydrink')} onClick={HandleItemClicked}/>
+                                <ProductGroup divClass={'col d-flex flex-column'} className={'btn btn-secondary flex-fill m-1'} items={products.filter(products => products.type === 'snackgram')} onClick={(e) => genericHandleItemClicked(e)}/>
+                                <ProductGroup divClass={'col d-flex flex-column'} className={'btn btn-secondary flex-fill m-1'} items={products.filter(products => products.type === 'energydrink')} onClick={(e) => genericHandleItemClicked(e)}/>
                             </div>
                         </div>
                         <div className='d-flex col-12'>
                             <div className="col-6 d-flex flex-column justify-content-between">
-                                <ProductGroup divClass={'d-flex flex-wrap'} className={'btn btn-success col-3 flex-fill m-1'} items={products.filter(products => products.type === 'bottleddrink')} onClick={HandleItemClicked}/>
-                                <ProductGroup divClass={'d-flex flex-wrap'} className={'btn btn-danger col-1 flex-fill m-1'} items={products.filter(products => products.type === 'alcoholicdrink')} onClick={HandleItemClicked}/>
+                                <ProductGroup divClass={'d-flex flex-wrap'} className={'btn btn-success col-3 flex-fill m-1'} items={products.filter(products => products.type === 'bottleddrink')} onClick={(e) => genericHandleItemClicked(e)}/>
+                                <ProductGroup divClass={'d-flex flex-wrap'} className={'btn btn-danger col-1 flex-fill m-1'} items={products.filter(products => products.type === 'alcoholicdrink')} onClick={(e) => genericHandleItemClicked(e)}/>
                             </div>
-                            <ProductGroup divClass={'d-flex flex-wrap col-6'} className={'btn btn-warning col-3 flex-fill m-1'} items={products.filter(products => products.type === 'snack')} onClick={HandleItemClicked}/>
+                            <ProductGroup divClass={'d-flex flex-wrap col-6'} className={'btn btn-warning col-3 flex-fill m-1'} items={products.filter(products => products.type === 'snack')} onClick={(e) => genericHandleItemClicked(e)}/>
                         </div>
                     </div>
                     <BankNoteButtons onClick={(e) => BanknoteClicked(e, transactionInprogress, price, setBanknoteWasClicked, setAmountReceived, setChange, setTransactionInprogress, setPaymentMethod, paymentMethod, setBasket, setPrice, setDisplayTransaction)} />
@@ -428,7 +400,7 @@ function Buffet() {
                         </div>
                     </div>
                     <Keypad 
-                        keypad={(e) => HandleKeypadClicked(e)}
+                        keypad={(e) => HandleKeypadClicked(e, banknoteWasClicked, transactionInprogress, paymentMethod, setTransactionInprogress, amountReceived, setAmountReceived, setBasket, setDisplayTransaction, setPrice, setPaymentMethod, setChange, setBanknoteWasClicked)}
                         cash={() => CashPayment(price, amountReceived, setChange, setTransactionInprogress, setPaymentMethod)}
                         credit={() => CreditPayment(setTransactionInprogress, setPaymentMethod, price)}
                     />

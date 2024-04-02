@@ -102,3 +102,61 @@ export function BanknoteClicked(e, transactionInprogress, price, setBanknoteWasC
         DeleteBasket(setBasket, setDisplayTransaction, setPrice, setAmountReceived, setPaymentMethod, setChange, setBanknoteWasClicked);
     }
 }
+
+export function HandleKeypadClicked(e, banknoteWasClicked, transactionInprogress, paymentMethod, setTransactionInprogress, amountReceived, setAmountReceived, setBasket, setDisplayTransaction, setPrice, setPaymentMethod, setChange, setBanknoteWasClicked) {
+    let key = e.target.value;
+    if (!banknoteWasClicked) {
+        if (transactionInprogress && paymentMethod === '') {
+            if (amountReceived === 0) {
+                setAmountReceived(key);
+            } else {
+                setAmountReceived(amountReceived + key);
+            }
+        }
+        if (!transactionInprogress) {
+            if (paymentMethod !== '') {
+                setTransactionInprogress(true);
+                DeleteBasket(setBasket, setDisplayTransaction, setPrice, setAmountReceived, setPaymentMethod, setChange, setBanknoteWasClicked);
+                setAmountReceived(key);
+            } else {
+                if (amountReceived === 0) {
+                    setAmountReceived(key);
+                } else {
+                    setAmountReceived(amountReceived + key);
+                }
+            }
+        }
+    } else {
+        if (transactionInprogress && paymentMethod === '') {
+            if (amountReceived === 0) {
+                setAmountReceived(key);
+            } else {
+                setAmountReceived(amountReceived + key);
+            }
+        }
+        if (!transactionInprogress && paymentMethod !== '') {
+            setTransactionInprogress(true);
+            DeleteBasket(setBasket, setDisplayTransaction, setPrice, setAmountReceived, setPaymentMethod, setChange, setBanknoteWasClicked);
+            setAmountReceived(key);
+        }
+    }
+}
+
+export function HandleItemClicked(newItem, transactionInprogress, paymentMethod, setTransactionInprogress, setPaymentMethod, setItemClicked, setItemIsClicked, setBasket, setDisplayTransaction, setPrice, setAmountReceived, setChange, setBanknoteWasClicked) {
+    if (!transactionInprogress && paymentMethod === '') {
+        setTransactionInprogress(true);
+        setPaymentMethod('');
+        setItemClicked(newItem);
+        setItemIsClicked(true);
+    } else if (transactionInprogress && paymentMethod === '') {
+        setItemClicked(newItem);
+        setItemIsClicked(true);
+    }
+    if (!transactionInprogress && paymentMethod === 'cash' || paymentMethod === 'credit') {
+        setTransactionInprogress(true);
+        setPaymentMethod('');
+        setItemClicked(newItem);
+        setItemIsClicked(true);
+        DeleteBasket(setBasket, setDisplayTransaction, setPrice, setAmountReceived, setPaymentMethod, setChange, setBanknoteWasClicked);
+    }
+}
