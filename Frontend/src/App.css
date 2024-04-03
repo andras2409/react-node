@@ -26,3 +26,29 @@ html, body {
     -webkit-backdrop-filter: blur(6px);
     border: 1px solid rgba(255, 255, 255, 0.33);
 }
+
+.seat{
+    background-color: #444451;
+    height: 12px;
+    width: 15px;
+    margin: 3px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.seat.selected {
+    background-color: #6feaf6;
+}
+
+.seat.occupied {
+    background-color: #fff;
+}
+
+.screen {
+    background-color: #fff;
+    height: 70px;
+    width: 75%;
+    margin: 15px 0;
+    transform: rotateX(-45deg);
+    clip-path: polygon(0% 0%, 100% 0%, 90% 100%, 10% 100%);
+}

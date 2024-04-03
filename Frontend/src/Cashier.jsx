@@ -15,6 +15,7 @@ import {
     HandleKeypadClicked
 } from '../../Backend/calculator.js';
 import Summary from './components/Summary.jsx';
+import MovieButton from './components/MovieButton.jsx';
 
 function Cashier() {
 
@@ -283,61 +284,759 @@ function Cashier() {
         return <Summary />
     }
 
+    const roomOne = [
+        {title: 'Dune: Part One', startingTime: '18:30', classification: 16, seats: 128},
+        {title: 'Dune: Part Two', startingTime: '19:45', classification: 16, seats: 128},
+        {title: 'Avatar: The Way Of Water', startingTime: '21:30', classification: 16, seats: 128},
+        {title: 'The Conjuring', startingTime: '22:30', classification: 18, seats: 128}
+    ];
+
     return (
         <> 
             <div className='d-flex vh-100'>
-                <div className='d-flex col-8 bg-dark bg-gradient p-1'>
+                <div className='d-flex col-8 bg-dark bg-gradient'>
                     <div className='d-flex flex-column flex-fill col-11 overflow-auto'>
 
+
                         <div className='d-flex justify-content-start mb-1'>
-
-                            <button className='btn bg-success bg-gradient fs-5 fw-bold col-2 m-1 mt-0 mb-0 me-1 ms-0'>
-                                <div className='row'>
-                                    <div className='col text-truncate'>Dune: Part Two</div>
-                                </div>
-                                <div className="row justify-content-center">18:30</div>
-                                <div className='row'>
-                                    <div className='col fs-6 d-flex justify-content-start'>18</div>
-                                    <div className='col fs-6 d-flex justify-content-end'>128/75</div>
-                                </div>
-                            </button>
-
-                            <button className='btn bg-success bg-gradient fs-5 fw-bold col-2 m-1 mt-0 mb-0 me-1 ms-0'>
-                                <div className='row'>
-                                    <div className='col text-truncate'>Avatar: The Way Of Water</div>
-                                </div>
-                                <div className="row justify-content-center">18:30</div>
-                                <div className='row'>
-                                    <div className='col fs-6 d-flex justify-content-start'>18</div>
-                                    <div className='col fs-6 d-flex justify-content-end'>128/75</div>
-                                </div>
-                            </button>
-
+                            {roomOne.map((movie, index) => (
+                                <MovieButton 
+                                    key={index}
+                                    title={movie.title}
+                                    startingTime={movie.startingTime}
+                                    classification={movie.classification}
+                                    seats={movie.seats}
+                                />
+                            ))}
                         </div>
-                        <div className='d-flex justify-content-start'>
 
-                            <button className='btn bg-success bg-gradient fs-5 fw-bold col-2 m-1 mt-0 mb-0 me-1 ms-0'>
-                                <div className='row'>
-                                    <div className='col text-truncate'>Dune: Part Two</div>
-                                </div>
-                                <div className="row justify-content-center">18:30</div>
-                                <div className='row'>
-                                    <div className='col fs-6 d-flex justify-content-start'>18</div>
-                                    <div className='col fs-6 d-flex justify-content-end'>128/75</div>
-                                </div>
-                            </button>
+                        <div className='d-flex flex-column flex-fill justify-content-center align-items-center bg-dark'>
+                            <div className='screen shadow-lg'></div>
 
-                            <button className='btn bg-success bg-gradient fs-5 fw-bold col-2 m-1 mt-0 mb-0 me-1 ms-0'>
-                                <div className='row'>
-                                    <div className='col text-truncate'>Avatar: The Way Of Water</div>
+                            <div className="auditorium d-flex flex-column align-items-center">
+                                <div className='d-flex mb-4'>
+                                <div className="sector me-3">
+                                        <div className='d-flex justify-content-end'>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                        </div>
+                                        <div className='d-flex justify-content-end'>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                        </div>
+                                        <div className='d-flex justify-content-end'>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                        </div>
+                                        <div className='d-flex justify-content-end'>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                        </div>
+                                        <div className='d-flex justify-content-end'>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                        </div>
+                                        <div className='d-flex justify-content-end'>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                        </div>
+                                        <div className='d-flex justify-content-end'>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                        </div>
+                                        <div className='d-flex justify-content-end'>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                        </div>
+                                        <div className='d-flex justify-content-end'>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                        </div>
+                                        <div className='d-flex justify-content-end'>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                        </div>
+                                    </div>
+                                    <div className="sector ms-3">
+                                        <div className='d-flex'>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                        </div>
+                                        <div className='d-flex'>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                        </div>
+                                        <div className='d-flex'>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                        </div>
+                                        <div className='d-flex'>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                        </div>
+                                        <div className='d-flex'>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                        </div>
+                                        <div className='d-flex'>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                        </div>
+                                        <div className='d-flex'>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                        </div>
+                                        <div className='d-flex'>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                        </div>
+                                        <div className='d-flex'>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                        </div>
+                                        <div className='d-flex'>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className="row justify-content-center">18:30</div>
-                                <div className='row'>
-                                    <div className='col fs-6 d-flex justify-content-start'>18</div>
-                                    <div className='col fs-6 d-flex justify-content-end'>128/75</div>
-                                </div>
-                            </button>
-
+                                <div className='d-flex'>
+                                    <div className="sector me-3">
+                                        <div className='d-flex'>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                        </div>
+                                        <div className='d-flex'>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                        </div>
+                                        <div className='d-flex'>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                        </div>
+                                        <div className='d-flex'>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                        </div>
+                                        <div className='d-flex'>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                        </div>
+                                        <div className='d-flex'>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                        </div>
+                                        <div className='d-flex'>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                        </div>
+                                        <div className='d-flex'>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                        </div>
+                                        <div className='d-flex'>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                        </div>
+                                        <div className='d-flex'>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                        </div>
+                                    </div>
+                                    <div className="sector ms-3">
+                                        <div className='d-flex'>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                        </div>
+                                        <div className='d-flex'>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                        </div>
+                                        <div className='d-flex'>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                        </div>
+                                        <div className='d-flex'>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                        </div>
+                                        <div className='d-flex'>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                        </div>
+                                        <div className='d-flex'>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                        </div>
+                                        <div className='d-flex'>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                        </div>
+                                        <div className='d-flex'>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                        </div>
+                                        <div className='d-flex'>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                        </div>
+                                        <div className='d-flex'>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat occupied'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat selected'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                            <div className='seat'></div>
+                                        </div>
+                                    </div>
+                                </div>                               
+                            </div>                    
                         </div>
                     </div>
                     <BankNoteButtons onClick={(e) => BanknoteClicked(e, transactionInprogress, price, setBanknoteWasClicked, setAmountReceived, setChange, setTransactionInprogress, setPaymentMethod, paymentMethod, setTickets, setPrice, setDisplayTransaction)} />
