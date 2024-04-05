@@ -68,7 +68,10 @@ function Cashier() {
     const [displayPrice, setDisplayPrice] = useState(0);
     const [displayTrasnaction, setDisplayTransaction] = useState('');
     const [displayAuditorium, setDisplayAuditorium] = useState('');
-    const [currentAud, setCurrentAud] = useState('');
+
+    //--------Movie-Infos--------//
+    const [currentAud, setCurrentAud] = useState(0);
+    const [currentSerialNumber, setCurrentSerialNumber] = useState(0);
 
 
     useEffect(() => {
@@ -79,10 +82,10 @@ function Cashier() {
     }, [totalCash, totalCredit, totalWithdrawal, totalDeposit]);
 
     const roomOne = [
-        {title: 'Dune: Part One', startingTime: '18:30', classification: 16, seats: 128},
-        {title: 'Dune: Part Two', startingTime: '19:45', classification: 16, seats: 128},
-        {title: 'Avatar: The Way Of Water', startingTime: '21:30', classification: 16, seats: 128},
-        {title: 'The Conjuring', startingTime: '22:30', classification: 18, seats: 128}
+        {title: 'Dune: Part One', startingTime: '18:30', classification: 16, seats: 128, aud: 1, number: 1},
+        {title: 'Dune: Part Two', startingTime: '19:45', classification: 16, seats: 128, aud: 1, number: 2},
+        {title: 'Avatar: The Way Of Water', startingTime: '21:30', classification: 16, seats: 128, aud: 1, number: 3},
+        {title: 'The Conjuring', startingTime: '22:30', classification: 18, seats: 128, aud: 1, number: 4}
     ];
 
     function genericHandleTicketClicked(newTicket) {
@@ -357,7 +360,7 @@ function Cashier() {
     },[price, amountReceived, transactionInprogress, change, paymentMethod]);
 
     useEffect(() => {
-        if (currentAud === '') {
+        if (currentAud === 0) {
             setDisplayAuditorium(
                 <>
                     <div className='d-flex justify-content-start p-1'>
@@ -368,7 +371,10 @@ function Cashier() {
                                 startingTime={movie.startingTime}
                                 classification={movie.classification}
                                 seats={movie.seats}
-                                onClick={() => setCurrentAud('aud-1')}
+                                onClick={() => {
+                                    setCurrentAud(1);
+                                    setCurrentSerialNumber(movie.number);
+                                }}
                             />
                         ))}
                     </div>
@@ -380,7 +386,10 @@ function Cashier() {
                                 startingTime={movie.startingTime}
                                 classification={movie.classification}
                                 seats={movie.seats}
-                                onClick={() => setCurrentAud('aud-2')}
+                                onClick={() => {
+                                    setCurrentAud(2);
+                                    setCurrentSerialNumber(movie.number);
+                                }}
                             />
                         ))}
                     </div>
@@ -392,34 +401,37 @@ function Cashier() {
                                 startingTime={movie.startingTime}
                                 classification={movie.classification}
                                 seats={movie.seats}
-                                onClick={() => setCurrentAud('aud-3')}
+                                onClick={() => {
+                                    setCurrentAud(3);
+                                    setCurrentSerialNumber(movie.number);
+                                }}
                             />
                         ))}
                     </div>
                 </>
             );
         }
-        if (currentAud === "aud-1") {
+        if (currentAud === 1) {
             setDisplayAuditorium(
                 <>
-                    <Auditorium_1 ticketBasket={ticketBasket} paymentMethod={paymentMethod}/>
-                    <TicketMenu back={() => setCurrentAud('')} tickets={tickets} onClick={(e) => genericHandleTicketClicked(e)}/>
+                    <Auditorium_1 ticketBasket={ticketBasket} paymentMethod={paymentMethod} movieNumber={currentSerialNumber} currentAud={currentAud}/>
+                    <TicketMenu back={() => setCurrentAud(0)} tickets={tickets} onClick={(e) => genericHandleTicketClicked(e)}/>
                 </>
             );
         }
-        if (currentAud === "aud-2") {
+        if (currentAud === 2) {
             setDisplayAuditorium(
                 <>
-                    <Auditorium_2 ticketBasket={ticketBasket} paymentMethod={paymentMethod}/>
-                    <TicketMenu back={() => setCurrentAud('')} tickets={tickets} onClick={(e) => genericHandleTicketClicked(e)}/>
+                    <Auditorium_2 ticketBasket={ticketBasket} paymentMethod={paymentMethod} movieNumber={currentSerialNumber}/>
+                    <TicketMenu back={() => setCurrentAud(0)} tickets={tickets} onClick={(e) => genericHandleTicketClicked(e)}/>
                 </>
             );
         }
-        if (currentAud === "aud-3") {
+        if (currentAud === 3) {
             setDisplayAuditorium(
                 <>
-                    <Auditorium_3 ticketBasket={ticketBasket} paymentMethod={paymentMethod}/>
-                    <TicketMenu back={() => setCurrentAud('')} tickets={tickets} onClick={(e) => genericHandleTicketClicked(e)}/>
+                    <Auditorium_3 ticketBasket={ticketBasket} paymentMethod={paymentMethod} movieNumber={currentSerialNumber}/>
+                    <TicketMenu back={() => setCurrentAud(0)} tickets={tickets} onClick={(e) => genericHandleTicketClicked(e)}/>
                 </>
             );
         }
