@@ -48,7 +48,7 @@ function Buffet() {
     //--------Displays--------//
     const [displayAmount, setDisplayAmount] = useState(0);
     const [displayPrice, setDisplayPrice] = useState(0);
-    const [displayTrasnaction, setDisplayTransaction] = useState('');
+    const [displayTransaction, setDisplayTransaction] = useState('');
     
     //--------localStorage--------//
     const [totalItemList, setTotalItemList] = useState(() => JSON.parse(localStorage.getItem('totalItemList')) || []);
@@ -383,7 +383,7 @@ function Buffet() {
                         {displayPrice}
                     </div>
                     <div className={'h-100 overflow-auto m-2'}>
-                        {displayTrasnaction}
+                        {displayTransaction}
                     </div>
                     <div className='d-flex justify-content-center align-items-center text-white fs-4 fw-bold bg-dark m-2 mt-0'>
                         {displayAmount}
@@ -401,8 +401,8 @@ function Buffet() {
                     </div>
                     <Keypad 
                         keypad={(e) => HandleKeypadClicked(e, banknoteWasClicked, transactionInprogress, paymentMethod, setTransactionInprogress, amountReceived, setAmountReceived, setBasket, setDisplayTransaction, setPrice, setPaymentMethod, setChange, setBanknoteWasClicked)}
-                        cash={() => CashPayment(price, amountReceived, setChange, setTransactionInprogress, setPaymentMethod)}
-                        credit={() => CreditPayment(setTransactionInprogress, setPaymentMethod, price)}
+                        cash={() => CashPayment(price, amountReceived, setChange, setTransactionInprogress, setPaymentMethod, paymentMethod, transactionInprogress)}
+                        credit={() => CreditPayment(setTransactionInprogress, setPaymentMethod, price, paymentMethod, transactionInprogress)}
                     />
                 </div>
                 <div className='d-flex flex-column justify-content-between col-1 bg-dark p-2'>

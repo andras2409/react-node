@@ -27,13 +27,20 @@ html, body {
     border: 1px solid rgba(255, 255, 255, 0.33);
 }
 
-.seat{
+.seat {
     background-color: #444451;
-    height: 15px;
-    width: 17px;
-    margin: 3px;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
+    height: 19px;
+    width: 21px;
+    margin: 2px;
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.seat:hover {
+    cursor: pointer;
 }
 
 .seat.selected {
@@ -48,11 +55,34 @@ html, body {
     background-color: #ffb923;
 }
 
+.seat.selected-example {
+    background-color: #6feaf6;
+}
+
+.seat.occupied-example {
+    background-color: #fff;
+}
+
+.seat.reserved-example{
+    background-color: #ffb923;
+}
+
 .screen {
     background-color: #fff;
     height: 70px;
     width: 75%;
-    margin: 15px 0;
     transform: rotateX(-45deg);
     clip-path: polygon(0% 0%, 100% 0%, 90% 100%, 10% 100%);
+}
+
+.aud-row{
+    background-color: #ffffffb7;
+    height: 19px;
+    width: 21px;
+    margin: 2px;
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

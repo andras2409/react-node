@@ -12,7 +12,12 @@ import {
     DeleteNumbers, 
     DeleteLocalStorage, 
     BanknoteClicked,
-    HandleKeypadClicked
+    HandleKeypadClicked,
+    HandleItemClicked,
+    ItemClicked,
+    IncreaseItemAmount,
+    DecreaseItemAmount,
+    DeleteItem
 } from '../../Backend/calculator.js';
 import Summary from './components/Summary.jsx';
 import MovieButton from './components/MovieButton.jsx';
@@ -20,12 +25,23 @@ import Auditorium_1 from './components/Auditoriums/Auditorium_1.jsx';
 import Auditorium_2 from './components/Auditoriums/Auditorium_2.jsx';
 import Auditorium_3 from './components/Auditoriums/Auditorium_3.jsx';
 import TicketMenu from './components/TicketMenu.jsx';
+import Trash from './components/Trash.jsx';
 
 function Cashier() {
+
+    useEffect(() => {
+        fetch('http://localhost:8081/ticket')
+        .then(res => res.json())
+        .then(tickets => setTickets(tickets))
+        .catch(err => console.log(err));
+    }, [])
 
     const [currentPage, setCurrentPage] = useState('Cashier');
 
     const [tickets, setTickets] = useState([]);
+    const [ticketBasket, setTicketBasket] = useState([]);
+    const [ticketIsClicked, setTicketIsClicked] = useState(true);
+    const [ticketClicked, setTicketClicked] = useState(null);
     const [price, setPrice] = useState(0);
     const [change, setChange] = useState(0);
     const [transactionInprogress, setTransactionInprogress] = useState(false);
@@ -61,6 +77,32 @@ function Cashier() {
         localStorage.setItem('totalWithdrawal', JSON.stringify(totalWithdrawal));
         localStorage.setItem('totalDeposit', JSON.stringify(totalDeposit));
     }, [totalCash, totalCredit, totalWithdrawal, totalDeposit]);
+
+    const roomOne = [
+        {title: 'Dune: Part One', startingTime: '18:30', classification: 16, seats: 128},
+        {title: 'Dune: Part Two', startingTime: '19:45', classification: 16, seats: 128},
+        {title: 'Avatar: The Way Of Water', startingTime: '21:30', classification: 16, seats: 128},
+        {title: 'The Conjuring', startingTime: '22:30', classification: 18, seats: 128}
+    ];
+
+    function genericHandleTicketClicked(newTicket) {
+        HandleItemClicked( 
+            newTicket, 
+            transactionInprogress, 
+            paymentMethod, 
+            setTransactionInprogress, 
+            setPaymentMethod, 
+            setTicketClicked, 
+            setTicketIsClicked, 
+            setTicketBasket, 
+            setDisplayTransaction, 
+            setPrice, 
+            setAmountReceived, 
+            setChange, 
+            setBanknoteWasClicked
+        );
+        console.log('HandleItemClicked()')
+    }
 
     function Withdrawal() {
         if (amountReceived > 0) {
@@ -232,6 +274,35 @@ function Cashier() {
     },[withdrawal, transactionInprogress, paymentMethod, totalCash, totalWithdrawal, currentWithdrawalAmount]);
 
     useEffect(() => {
+        if (transactionInprogress && ticketIsClicked && ticketClicked != null) {
+            ItemClicked(ticketClicked, ticketBasket, price);
+            setTicketBasket([...ticketBasket]);
+            setPrice(price + parseInt(ticketClicked.price));
+        }
+        setTicketClicked(null);
+        setDisplayPrice(price);
+        setDisplayTransaction(
+            <ul className={'list-group'}>
+                {ticketBasket.map((ticket, index) => (
+                    <li className={'list-group-item d-flex justify-content-between p-1'} key={index}>
+                        <div className='d-flex justify-content-center align-items-center'>
+                            {ticket.name}
+                        </div>
+                        <div className='btn-group col-6'>
+                            <div className='d-flex col-8'>
+                                <button className='btn btn-secondary' onClick={() => DecreaseItemAmount(index, ticketBasket, setTicketBasket, price, setPrice)}>-</button>
+                                <div className='d-flex justify-content-center align-items-center p-3 pt-2 pb-2 col-4'>{ticket.amount}</div>
+                                <button className='btn btn-secondary' onClick={() => IncreaseItemAmount(index, price, ticketBasket, setTicketBasket, setPrice)}>+</button>
+                            </div>
+                            <Trash divClass={'d-flex justify-content-center col-4'} onClick={() => DeleteItem(index, setTicketBasket, ticketBasket, setPrice, price)}/>
+                        </div>
+                    </li>
+                ))}
+            </ul>
+        );
+    },[transactionInprogress, ticketIsClicked, ticketClicked, ticketBasket, price]);
+
+    useEffect(() => {
         if (!transactionInprogress && price === 0) {
             setDisplayPrice(price);
             setDisplayAmount(amountReceived);
@@ -245,7 +316,7 @@ function Cashier() {
 
         if (!transactionInprogress) {
             if (paymentMethod === 'cash') {
-                SaveItems(tickets, totalTickets);
+                SaveItems(ticketBasket, totalTickets);
                 setTotalCash(totalCash + price);
                 setDisplayTransaction(
                     <>
@@ -271,7 +342,7 @@ function Cashier() {
                 );
             }
             if (paymentMethod === 'credit') {
-                SaveItems(basket, totalItemList);
+                SaveItems(ticketBasket, totalTickets);
                 setTotalCredit(totalCredit + price);
                 setDisplayTransaction(
                     <>
@@ -283,14 +354,7 @@ function Cashier() {
                 );
             }
         }
-    },[price, amountReceived, transactionInprogress, change]);
-
-    const roomOne = [
-        {title: 'Dune: Part One', startingTime: '18:30', classification: 16, seats: 128},
-        {title: 'Dune: Part Two', startingTime: '19:45', classification: 16, seats: 128},
-        {title: 'Avatar: The Way Of Water', startingTime: '21:30', classification: 16, seats: 128},
-        {title: 'The Conjuring', startingTime: '22:30', classification: 18, seats: 128}
-    ];
+    },[price, amountReceived, transactionInprogress, change, paymentMethod]);
 
     useEffect(() => {
         if (currentAud === '') {
@@ -338,28 +402,28 @@ function Cashier() {
         if (currentAud === "aud-1") {
             setDisplayAuditorium(
                 <>
-                    <Auditorium_1 />
-                    <TicketMenu back={() => setCurrentAud('')}/>
+                    <Auditorium_1 ticketBasket={ticketBasket} paymentMethod={paymentMethod}/>
+                    <TicketMenu back={() => setCurrentAud('')} tickets={tickets} onClick={(e) => genericHandleTicketClicked(e)}/>
                 </>
             );
         }
         if (currentAud === "aud-2") {
             setDisplayAuditorium(
                 <>
-                    <Auditorium_2 />
-                    <TicketMenu back={() => setCurrentAud('')}/>
+                    <Auditorium_2 ticketBasket={ticketBasket} paymentMethod={paymentMethod}/>
+                    <TicketMenu back={() => setCurrentAud('')} tickets={tickets} onClick={(e) => genericHandleTicketClicked(e)}/>
                 </>
             );
         }
         if (currentAud === "aud-3") {
             setDisplayAuditorium(
                 <>
-                    <Auditorium_3 />
-                    <TicketMenu back={() => setCurrentAud('')}/>
+                    <Auditorium_3 ticketBasket={ticketBasket} paymentMethod={paymentMethod}/>
+                    <TicketMenu back={() => setCurrentAud('')} tickets={tickets} onClick={(e) => genericHandleTicketClicked(e)}/>
                 </>
             );
         }
-    },[currentAud]);
+    },[currentAud, paymentMethod, ticketBasket]);
 
     if (currentPage === 'back-to-main') {
         return <MainMenu />;
@@ -370,15 +434,23 @@ function Cashier() {
     return (
         <> 
             <div className='d-flex vh-100'>
-                <div className='d-flex col-8 bg-dark bg-gradient'>
+                <div className='d-flex col-9 bg-dark bg-gradient'>
                     <div className='d-flex flex-column flex-fill col-11'>
-                        {displayAuditorium}
-                            
-
-                        
-                        
+                        {displayAuditorium}      
                     </div>
-                    <BankNoteButtons onClick={(e) => BanknoteClicked(e, transactionInprogress, price, setBanknoteWasClicked, setAmountReceived, setChange, setTransactionInprogress, setPaymentMethod, paymentMethod, setTickets, setPrice, setDisplayTransaction)} />
+                    <BankNoteButtons 
+                        className={'col'}
+                        topButton={
+                            <DropdownButton buttonClass={'m-1 pt-2 pb-2'} title={currentPage}>
+                                <Button id={'back-to-main'} className={'btn btn-outline-primary m-2 p-2 fs-5'} onClick={() => setCurrentPage('back-to-main')}>Back To Main Menu</Button>
+                                <Button id={'back-to-main'} className={'btn btn-outline-primary m-2 p-2 fs-5'} onClick={() => setCurrentPage('summary')}>Summary</Button>
+                            </DropdownButton>
+                        }
+                        onClick={(e) => BanknoteClicked(e, transactionInprogress, price, setBanknoteWasClicked, setAmountReceived, setChange, setTransactionInprogress, setPaymentMethod, paymentMethod, setTicketBasket, setPrice, setDisplayTransaction)}
+                    >
+                        <Button className={'btn btn-primary fs-6 m-1'} onClick={() => DeleteBasket(setTicketBasket, setDisplayTransaction, setPrice, setAmountReceived, setPaymentMethod, setChange, setBanknoteWasClicked)}>Delete Basket</Button>
+                        <Button className={'btn btn-primary fs-6 m-1'} onClick={() => DeleteLocalStorage()}>Delete Storage</Button>
+                    </BankNoteButtons>
                 </div>
                 <div className='col-3 d-flex flex-column flex-fill justify-content-between bg-secondary bg-gradient'>
                     <div className='bg-dark text-white d-flex justify-content-center fs-3 fw-bold'>
@@ -402,20 +474,10 @@ function Cashier() {
                         </div>
                     </div>
                     <Keypad 
-                        keypad={(e) => HandleKeypadClicked(e, banknoteWasClicked, transactionInprogress, paymentMethod, setTransactionInprogress, amountReceived, setAmountReceived, setTickets, setDisplayTransaction, setPrice, setPaymentMethod, setChange, setBanknoteWasClicked)}
-                        cash={() => CashPayment(price, amountReceived, setChange, setTransactionInprogress, setPaymentMethod)}
-                        credit={() => CreditPayment(setTransactionInprogress, setPaymentMethod, price)}
+                        keypad={(e) => HandleKeypadClicked(e, banknoteWasClicked, transactionInprogress, paymentMethod, setTransactionInprogress, amountReceived, setAmountReceived, setTicketBasket, setDisplayTransaction, setPrice, setPaymentMethod, setChange, setBanknoteWasClicked)}
+                        cash={() => CashPayment(price, amountReceived, setChange, setTransactionInprogress, setPaymentMethod, paymentMethod, transactionInprogress)}
+                        credit={() => CreditPayment(setTransactionInprogress, setPaymentMethod, price, paymentMethod, transactionInprogress)}
                     />
-                </div>
-                <div className='d-flex flex-column justify-content-between col-1 bg-dark p-2'>
-                    <DropdownButton title={currentPage}>
-                        <Button id={'back-to-main'} className={'btn btn-outline-primary m-2 p-2 fs-5'} onClick={() => setCurrentPage('back-to-main')}>Back To Main Menu</Button>
-                        <Button id={'back-to-main'} className={'btn btn-outline-primary m-2 p-2 fs-5'} onClick={() => setCurrentPage('summary')}>Summary</Button>
-                    </DropdownButton>
-                    <div>
-                        <Button className={'btn btn-primary fs-6 m-1'} onClick={() => DeleteBasket(setTickets, setDisplayTransaction, setPrice, setAmountReceived, setPaymentMethod, setChange, setBanknoteWasClicked)}>Delete Basket</Button>
-                        <Button className={'btn btn-primary fs-6 m-1'} onClick={() => DeleteLocalStorage()}>Delete Storage</Button>
-                    </div>
                 </div>
             </div>
         </>

@@ -15,8 +15,6 @@ export function ItemClicked(newItem, basket, price){
     }
 
     price += parseInt(newItem.price);
-
-    console.log(basket);
 }
 
 export function IncreaseItemAmount(indexToIncrease, price, basket, setBasket, setPrice) {
@@ -59,16 +57,16 @@ export function DeleteBasket(setBasket, setDisplayTransaction, setPrice, setAmou
     setBanknoteWasClicked(false);
 }
 
-export function CashPayment(price, amountReceived, setChange, setTransactionInprogress, setPaymentMethod) {
-    if (amountReceived >= price && price != 0) {
+export function CashPayment(price, amountReceived, setChange, setTransactionInprogress, setPaymentMethod, paymentMethod, transactionInprogress) {
+    if (amountReceived >= price && price != 0 && paymentMethod === '' && transactionInprogress) {
         setChange(amountReceived - price);
         setTransactionInprogress(false);
         setPaymentMethod('cash');
     }
 }
 
-export function CreditPayment(setTransactionInprogress, setPaymentMethod, price) {
-    if (price > 0) {
+export function CreditPayment(setTransactionInprogress, setPaymentMethod, price, paymentMethod, transactionInprogress) {
+    if (price > 0 && paymentMethod === '' && transactionInprogress) {
         setTransactionInprogress(false);
         setPaymentMethod('credit');
     }
@@ -95,7 +93,7 @@ export function BanknoteClicked(e, transactionInprogress, price, setBanknoteWasC
     if (transactionInprogress && banknote >= price && price > 0) {
         setBanknoteWasClicked(true);
         setAmountReceived(banknote);
-        CashPayment(price, banknote, setChange, setTransactionInprogress, setPaymentMethod);
+        CashPayment(price, banknote, setChange, setTransactionInprogress, setPaymentMethod, paymentMethod, transactionInprogress);
     }
     if (paymentMethod !== '') {
         setPaymentMethod('');
