@@ -1,10 +1,30 @@
 import React, { useEffect, useState } from 'react'
+import TicketMenu from '../TicketMenu';
+import { HandleItemClicked, SaveTickets } from '../../../../Backend/calculator';
 
-const Auditorium_1 = ({ ticketBasket, paymentMethod, movieNumber, currentAud }) => {
+const Auditorium_1 = ({ ticketBasket, paymentMethod, movieNumber, currentAud, tickets, setCurrentAud, transactionInprogress, setTransactionInprogress, setPaymentMethod, setTicketClicked, setTicketIsClicked, setTicketBasket, setDisplayTransaction, setPrice, setAmountReceived, setChange, setBanknoteWasClicked }) => {
 
+    const seats = document.querySelectorAll('.seat');
     const [numberOfTickets, setNumberOfTickets] = useState(0);
     const [selectedTickets, setSelectedTickets] = useState(0);
     const [soldSeats, setSoldSeats] = useState([]);
+    const screeningId = `auditorium_${currentAud}_movie_${movieNumber}`;
+    const [savedSeats, setSavedSeats] = useState(() => JSON.parse(localStorage.getItem(`auditorium_${currentAud}_movie_${movieNumber}`)) || []);
+    const [seatsLoaded, setSeatsLoaded] = useState(false);
+
+    useEffect(() => {
+        setSeatsLoaded(true);
+        seats.forEach((seat) => {
+            const seatValue = seat.getAttribute('data-value');
+            if (savedSeats.includes(seatValue)) {
+                seat.classList.add('occupied');
+            }
+        })
+    },[screeningId, savedSeats, seats, seatsLoaded]);
+
+    useEffect(() => {
+        localStorage.setItem(screeningId, JSON.stringify(savedSeats));
+    });
 
     useEffect(() => {
         const totalTickets = ticketBasket.reduce((total, ticket) => total + ticket.amount, 0);
@@ -24,7 +44,6 @@ const Auditorium_1 = ({ ticketBasket, paymentMethod, movieNumber, currentAud }) 
         }
     }
 
-    const seats = document.querySelectorAll('.seat');
     useEffect(() => {
         if (ticketBasket.length === 0) {
             seats.forEach((seat) => {
@@ -44,12 +63,31 @@ const Auditorium_1 = ({ ticketBasket, paymentMethod, movieNumber, currentAud }) 
             })
             setSelectedTickets(0);
             setNumberOfTickets(0);
+            setSavedSeats((prevSeats) => [...prevSeats, soldSeats]);
+            SaveTickets(soldSeats, savedSeats);
         }
-    },[paymentMethod]);
+    },[paymentMethod, soldSeats]);
 
-    
-    console.log(seats);
     console.log(soldSeats);
+
+    function genericHandleTicketClicked(newTicket) {
+        HandleItemClicked( 
+            newTicket, 
+            transactionInprogress, 
+            paymentMethod, 
+            setTransactionInprogress, 
+            setPaymentMethod, 
+            setTicketClicked, 
+            setTicketIsClicked, 
+            setTicketBasket, 
+            setDisplayTransaction, 
+            setPrice, 
+            setAmountReceived, 
+            setChange, 
+            setBanknoteWasClicked
+        );
+        console.log('HandleItemClicked()')
+    }
 
     return (
         <>
@@ -108,7 +146,7 @@ const Auditorium_1 = ({ ticketBasket, paymentMethod, movieNumber, currentAud }) 
                             <div className='d-flex mb-4'>
                                 <div className="sector me-3">
                                     <div className='d-flex justify-content-end'>
-                                        <div className='seat' data-value={'A/L1'} onClick={(e) => setClicked(e)}>1</div>
+                                        <div className='seat' onLoad={(e) => handleType(e)} data-value={'A/L1'} onClick={(e) => setClicked(e)}>1</div>
                                         <div className='seat' data-value={'A/L2'} onClick={(e) => setClicked(e)}>2</div>
                                         <div className='seat' data-value={'A/L3'} onClick={(e) => setClicked(e)}>3</div>
                                         <div className='seat' data-value={'A/L4'} onClick={(e) => setClicked(e)}>4</div>
@@ -424,346 +462,346 @@ const Auditorium_1 = ({ ticketBasket, paymentMethod, movieNumber, currentAud }) 
                             <div className='d-flex'>
                                 <div className="sector me-3">
                                     <div className='d-flex'>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
+                                        <div className='seat' data-value={'K/L1'} onClick={(e) => setClicked(e)}>1</div>
+                                        <div className='seat' data-value={'K/L2'} onClick={(e) => setClicked(e)}>2</div>
+                                        <div className='seat' data-value={'K/L3'} onClick={(e) => setClicked(e)}>3</div>
+                                        <div className='seat' data-value={'K/L4'} onClick={(e) => setClicked(e)}>4</div>
+                                        <div className='seat' data-value={'K/L5'} onClick={(e) => setClicked(e)}>5</div>
+                                        <div className='seat' data-value={'K/L6'} onClick={(e) => setClicked(e)}>6</div>
+                                        <div className='seat' data-value={'K/L7'} onClick={(e) => setClicked(e)}>7</div>
+                                        <div className='seat' data-value={'K/L8'} onClick={(e) => setClicked(e)}>8</div>
+                                        <div className='seat' data-value={'K/L9'} onClick={(e) => setClicked(e)}>9</div>
+                                        <div className='seat' data-value={'K/L10'} onClick={(e) => setClicked(e)}>10</div>
+                                        <div className='seat' data-value={'K/L11'} onClick={(e) => setClicked(e)}>11</div>
+                                        <div className='seat' data-value={'K/L12'} onClick={(e) => setClicked(e)}>12</div>
+                                        <div className='seat' data-value={'K/L13'} onClick={(e) => setClicked(e)}>13</div>
+                                        <div className='seat' data-value={'K/L14'} onClick={(e) => setClicked(e)}>14</div>
+                                        <div className='seat' data-value={'K/L15'} onClick={(e) => setClicked(e)}>15</div>
                                     </div>
                                     <div className='d-flex'>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
+                                        <div className='seat' data-value={'L/L1'} onClick={(e) => setClicked(e)}>1</div>
+                                        <div className='seat' data-value={'L/L2'} onClick={(e) => setClicked(e)}>2</div>
+                                        <div className='seat' data-value={'L/L3'} onClick={(e) => setClicked(e)}>3</div>
+                                        <div className='seat' data-value={'L/L4'} onClick={(e) => setClicked(e)}>4</div>
+                                        <div className='seat' data-value={'L/L5'} onClick={(e) => setClicked(e)}>5</div>
+                                        <div className='seat' data-value={'L/L6'} onClick={(e) => setClicked(e)}>6</div>
+                                        <div className='seat' data-value={'L/L7'} onClick={(e) => setClicked(e)}>7</div>
+                                        <div className='seat' data-value={'L/L8'} onClick={(e) => setClicked(e)}>8</div>
+                                        <div className='seat' data-value={'L/L9'} onClick={(e) => setClicked(e)}>9</div>
+                                        <div className='seat' data-value={'L/L10'} onClick={(e) => setClicked(e)}>10</div>
+                                        <div className='seat' data-value={'L/L11'} onClick={(e) => setClicked(e)}>11</div>
+                                        <div className='seat' data-value={'L/L12'} onClick={(e) => setClicked(e)}>12</div>
+                                        <div className='seat' data-value={'L/L13'} onClick={(e) => setClicked(e)}>13</div>
+                                        <div className='seat' data-value={'L/L14'} onClick={(e) => setClicked(e)}>14</div>
+                                        <div className='seat' data-value={'L/L15'} onClick={(e) => setClicked(e)}>15</div>
                                     </div>
                                     <div className='d-flex'>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat '></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
+                                        <div className='seat' data-value={'M/L1'} onClick={(e) => setClicked(e)}>1</div>
+                                        <div className='seat' data-value={'M/L2'} onClick={(e) => setClicked(e)}>2</div>
+                                        <div className='seat' data-value={'M/L3'} onClick={(e) => setClicked(e)}>3</div>
+                                        <div className='seat' data-value={'M/L4'} onClick={(e) => setClicked(e)}>4</div>
+                                        <div className='seat' data-value={'M/L5'} onClick={(e) => setClicked(e)}>5</div>
+                                        <div className='seat' data-value={'M/L6'} onClick={(e) => setClicked(e)}>6</div>
+                                        <div className='seat' data-value={'M/L7'} onClick={(e) => setClicked(e)}>7</div>
+                                        <div className='seat' data-value={'M/L8'} onClick={(e) => setClicked(e)}>8</div>
+                                        <div className='seat' data-value={'M/L9'} onClick={(e) => setClicked(e)}>9</div>
+                                        <div className='seat' data-value={'M/L10'} onClick={(e) => setClicked(e)}>10</div>
+                                        <div className='seat' data-value={'M/L11'} onClick={(e) => setClicked(e)}>11</div>
+                                        <div className='seat' data-value={'M/L12'} onClick={(e) => setClicked(e)}>12</div>
+                                        <div className='seat' data-value={'M/L13'} onClick={(e) => setClicked(e)}>13</div>
+                                        <div className='seat' data-value={'M/L14'} onClick={(e) => setClicked(e)}>14</div>
+                                        <div className='seat' data-value={'M/L15'} onClick={(e) => setClicked(e)}>15</div>
                                     </div>
                                     <div className='d-flex'>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
+                                        <div className='seat' data-value={'N/L1'} onClick={(e) => setClicked(e)}>1</div>
+                                        <div className='seat' data-value={'N/L2'} onClick={(e) => setClicked(e)}>2</div>
+                                        <div className='seat' data-value={'N/L3'} onClick={(e) => setClicked(e)}>3</div>
+                                        <div className='seat' data-value={'N/L4'} onClick={(e) => setClicked(e)}>4</div>
+                                        <div className='seat' data-value={'N/L5'} onClick={(e) => setClicked(e)}>5</div>
+                                        <div className='seat' data-value={'N/L6'} onClick={(e) => setClicked(e)}>6</div>
+                                        <div className='seat' data-value={'N/L7'} onClick={(e) => setClicked(e)}>7</div>
+                                        <div className='seat' data-value={'N/L8'} onClick={(e) => setClicked(e)}>8</div>
+                                        <div className='seat' data-value={'N/L9'} onClick={(e) => setClicked(e)}>9</div>
+                                        <div className='seat' data-value={'N/L10'} onClick={(e) => setClicked(e)}>10</div>
+                                        <div className='seat' data-value={'N/L11'} onClick={(e) => setClicked(e)}>11</div>
+                                        <div className='seat' data-value={'N/L12'} onClick={(e) => setClicked(e)}>12</div>
+                                        <div className='seat' data-value={'N/L13'} onClick={(e) => setClicked(e)}>13</div>
+                                        <div className='seat' data-value={'N/L14'} onClick={(e) => setClicked(e)}>14</div>
+                                        <div className='seat' data-value={'N/L15'} onClick={(e) => setClicked(e)}>15</div>
                                     </div>
                                     <div className='d-flex'>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
+                                        <div className='seat' data-value={'O/L1'} onClick={(e) => setClicked(e)}>1</div>
+                                        <div className='seat' data-value={'O/L2'} onClick={(e) => setClicked(e)}>2</div>
+                                        <div className='seat' data-value={'O/L3'} onClick={(e) => setClicked(e)}>3</div>
+                                        <div className='seat' data-value={'O/L4'} onClick={(e) => setClicked(e)}>4</div>
+                                        <div className='seat' data-value={'O/L5'} onClick={(e) => setClicked(e)}>5</div>
+                                        <div className='seat' data-value={'O/L6'} onClick={(e) => setClicked(e)}>6</div>
+                                        <div className='seat' data-value={'O/L7'} onClick={(e) => setClicked(e)}>7</div>
+                                        <div className='seat' data-value={'O/L8'} onClick={(e) => setClicked(e)}>8</div>
+                                        <div className='seat' data-value={'O/L9'} onClick={(e) => setClicked(e)}>9</div>
+                                        <div className='seat' data-value={'O/L10'} onClick={(e) => setClicked(e)}>10</div>
+                                        <div className='seat' data-value={'O/L11'} onClick={(e) => setClicked(e)}>11</div>
+                                        <div className='seat' data-value={'O/L12'} onClick={(e) => setClicked(e)}>12</div>
+                                        <div className='seat' data-value={'O/L13'} onClick={(e) => setClicked(e)}>13</div>
+                                        <div className='seat' data-value={'O/L14'} onClick={(e) => setClicked(e)}>14</div>
+                                        <div className='seat' data-value={'O/L15'} onClick={(e) => setClicked(e)}>15</div>
                                     </div>
                                     <div className='d-flex'>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
+                                        <div className='seat' data-value={'P/L1'} onClick={(e) => setClicked(e)}>1</div>
+                                        <div className='seat' data-value={'P/L2'} onClick={(e) => setClicked(e)}>2</div>
+                                        <div className='seat' data-value={'P/L3'} onClick={(e) => setClicked(e)}>3</div>
+                                        <div className='seat' data-value={'P/L4'} onClick={(e) => setClicked(e)}>4</div>
+                                        <div className='seat' data-value={'P/L5'} onClick={(e) => setClicked(e)}>5</div>
+                                        <div className='seat' data-value={'P/L6'} onClick={(e) => setClicked(e)}>6</div>
+                                        <div className='seat' data-value={'P/L7'} onClick={(e) => setClicked(e)}>7</div>
+                                        <div className='seat' data-value={'P/L8'} onClick={(e) => setClicked(e)}>8</div>
+                                        <div className='seat' data-value={'P/L9'} onClick={(e) => setClicked(e)}>9</div>
+                                        <div className='seat' data-value={'P/L10'} onClick={(e) => setClicked(e)}>10</div>
+                                        <div className='seat' data-value={'P/L11'} onClick={(e) => setClicked(e)}>11</div>
+                                        <div className='seat' data-value={'P/L12'} onClick={(e) => setClicked(e)}>12</div>
+                                        <div className='seat' data-value={'P/L13'} onClick={(e) => setClicked(e)}>13</div>
+                                        <div className='seat' data-value={'P/L14'} onClick={(e) => setClicked(e)}>14</div>
+                                        <div className='seat' data-value={'P/L15'} onClick={(e) => setClicked(e)}>15</div>
                                     </div>
                                     <div className='d-flex'>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
+                                        <div className='seat' data-value={'Q/L1'} onClick={(e) => setClicked(e)}>1</div>
+                                        <div className='seat' data-value={'Q/L2'} onClick={(e) => setClicked(e)}>2</div>
+                                        <div className='seat' data-value={'Q/L3'} onClick={(e) => setClicked(e)}>3</div>
+                                        <div className='seat' data-value={'Q/L4'} onClick={(e) => setClicked(e)}>4</div>
+                                        <div className='seat' data-value={'Q/L5'} onClick={(e) => setClicked(e)}>5</div>
+                                        <div className='seat' data-value={'Q/L6'} onClick={(e) => setClicked(e)}>6</div>
+                                        <div className='seat' data-value={'Q/L7'} onClick={(e) => setClicked(e)}>7</div>
+                                        <div className='seat' data-value={'Q/L8'} onClick={(e) => setClicked(e)}>8</div>
+                                        <div className='seat' data-value={'Q/L9'} onClick={(e) => setClicked(e)}>9</div>
+                                        <div className='seat' data-value={'Q/L10'} onClick={(e) => setClicked(e)}>10</div>
+                                        <div className='seat' data-value={'Q/L11'} onClick={(e) => setClicked(e)}>11</div>
+                                        <div className='seat' data-value={'Q/L12'} onClick={(e) => setClicked(e)}>12</div>
+                                        <div className='seat' data-value={'Q/L13'} onClick={(e) => setClicked(e)}>13</div>
+                                        <div className='seat' data-value={'Q/L14'} onClick={(e) => setClicked(e)}>14</div>
+                                        <div className='seat' data-value={'Q/L15'} onClick={(e) => setClicked(e)}>15</div>
                                     </div>
                                     <div className='d-flex'>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
+                                        <div className='seat' data-value={'R/L1'} onClick={(e) => setClicked(e)}>1</div>
+                                        <div className='seat' data-value={'R/L2'} onClick={(e) => setClicked(e)}>2</div>
+                                        <div className='seat' data-value={'R/L3'} onClick={(e) => setClicked(e)}>3</div>
+                                        <div className='seat' data-value={'R/L4'} onClick={(e) => setClicked(e)}>4</div>
+                                        <div className='seat' data-value={'R/L5'} onClick={(e) => setClicked(e)}>5</div>
+                                        <div className='seat' data-value={'R/L6'} onClick={(e) => setClicked(e)}>6</div>
+                                        <div className='seat' data-value={'R/L7'} onClick={(e) => setClicked(e)}>7</div>
+                                        <div className='seat' data-value={'R/L8'} onClick={(e) => setClicked(e)}>8</div>
+                                        <div className='seat' data-value={'R/L9'} onClick={(e) => setClicked(e)}>9</div>
+                                        <div className='seat' data-value={'R/L10'} onClick={(e) => setClicked(e)}>10</div>
+                                        <div className='seat' data-value={'R/L11'} onClick={(e) => setClicked(e)}>11</div>
+                                        <div className='seat' data-value={'R/L12'} onClick={(e) => setClicked(e)}>12</div>
+                                        <div className='seat' data-value={'R/L13'} onClick={(e) => setClicked(e)}>13</div>
+                                        <div className='seat' data-value={'R/L14'} onClick={(e) => setClicked(e)}>14</div>
+                                        <div className='seat' data-value={'R/L15'} onClick={(e) => setClicked(e)}>15</div>
                                     </div>
                                     <div className='d-flex'>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
+                                        <div className='seat' data-value={'S/L1'} onClick={(e) => setClicked(e)}>1</div>
+                                        <div className='seat' data-value={'S/L2'} onClick={(e) => setClicked(e)}>2</div>
+                                        <div className='seat' data-value={'S/L3'} onClick={(e) => setClicked(e)}>3</div>
+                                        <div className='seat' data-value={'S/L4'} onClick={(e) => setClicked(e)}>4</div>
+                                        <div className='seat' data-value={'S/L5'} onClick={(e) => setClicked(e)}>5</div>
+                                        <div className='seat' data-value={'S/L6'} onClick={(e) => setClicked(e)}>6</div>
+                                        <div className='seat' data-value={'S/L7'} onClick={(e) => setClicked(e)}>7</div>
+                                        <div className='seat' data-value={'S/L8'} onClick={(e) => setClicked(e)}>8</div>
+                                        <div className='seat' data-value={'S/L9'} onClick={(e) => setClicked(e)}>9</div>
+                                        <div className='seat' data-value={'S/L10'} onClick={(e) => setClicked(e)}>10</div>
+                                        <div className='seat' data-value={'S/L11'} onClick={(e) => setClicked(e)}>11</div>
+                                        <div className='seat' data-value={'S/L12'} onClick={(e) => setClicked(e)}>12</div>
+                                        <div className='seat' data-value={'S/L13'} onClick={(e) => setClicked(e)}>13</div>
+                                        <div className='seat' data-value={'S/L14'} onClick={(e) => setClicked(e)}>14</div>
+                                        <div className='seat' data-value={'S/L15'} onClick={(e) => setClicked(e)}>15</div>
                                     </div>
                                     <div className='d-flex'>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
+                                        <div className='seat' data-value={'T/L1'} onClick={(e) => setClicked(e)}>1</div>
+                                        <div className='seat' data-value={'T/L2'} onClick={(e) => setClicked(e)}>2</div>
+                                        <div className='seat' data-value={'T/L3'} onClick={(e) => setClicked(e)}>3</div>
+                                        <div className='seat' data-value={'T/L4'} onClick={(e) => setClicked(e)}>4</div>
+                                        <div className='seat' data-value={'T/L5'} onClick={(e) => setClicked(e)}>5</div>
+                                        <div className='seat' data-value={'T/L6'} onClick={(e) => setClicked(e)}>6</div>
+                                        <div className='seat' data-value={'T/L7'} onClick={(e) => setClicked(e)}>7</div>
+                                        <div className='seat' data-value={'T/L8'} onClick={(e) => setClicked(e)}>8</div>
+                                        <div className='seat' data-value={'T/L9'} onClick={(e) => setClicked(e)}>9</div>
+                                        <div className='seat' data-value={'T/L10'} onClick={(e) => setClicked(e)}>10</div>
+                                        <div className='seat' data-value={'T/L11'} onClick={(e) => setClicked(e)}>11</div>
+                                        <div className='seat' data-value={'T/L12'} onClick={(e) => setClicked(e)}>12</div>
+                                        <div className='seat' data-value={'T/L13'} onClick={(e) => setClicked(e)}>13</div>
+                                        <div className='seat' data-value={'T/L14'} onClick={(e) => setClicked(e)}>14</div>
+                                        <div className='seat' data-value={'T/L15'} onClick={(e) => setClicked(e)}>15</div>
                                     </div>
                                 </div>
                                 <div className="sector ms-3">
                                     <div className='d-flex'>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
+                                        <div className='seat' data-value={'K/R15'} onClick={(e) => setClicked(e)}>15</div>
+                                        <div className='seat' data-value={'K/R14'} onClick={(e) => setClicked(e)}>14</div>
+                                        <div className='seat' data-value={'K/R13'} onClick={(e) => setClicked(e)}>13</div>
+                                        <div className='seat' data-value={'K/R12'} onClick={(e) => setClicked(e)}>12</div>
+                                        <div className='seat' data-value={'K/R11'} onClick={(e) => setClicked(e)}>11</div>
+                                        <div className='seat' data-value={'K/R10'} onClick={(e) => setClicked(e)}>10</div>
+                                        <div className='seat' data-value={'K/R9'} onClick={(e) => setClicked(e)}>9</div>
+                                        <div className='seat' data-value={'K/R8'} onClick={(e) => setClicked(e)}>8</div>
+                                        <div className='seat' data-value={'K/R7'} onClick={(e) => setClicked(e)}>7</div>
+                                        <div className='seat' data-value={'K/R6'} onClick={(e) => setClicked(e)}>6</div>
+                                        <div className='seat' data-value={'K/R5'} onClick={(e) => setClicked(e)}>5</div>
+                                        <div className='seat' data-value={'K/R4'} onClick={(e) => setClicked(e)}>4</div>
+                                        <div className='seat' data-value={'K/R3'} onClick={(e) => setClicked(e)}>3</div>
+                                        <div className='seat' data-value={'K/R2'} onClick={(e) => setClicked(e)}>2</div>
+                                        <div className='seat' data-value={'K/R1'} onClick={(e) => setClicked(e)}>1</div>
                                     </div>
                                     <div className='d-flex'>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
+                                        <div className='seat' data-value={'L/R15'} onClick={(e) => setClicked(e)}>15</div>
+                                        <div className='seat' data-value={'L/R14'} onClick={(e) => setClicked(e)}>14</div>
+                                        <div className='seat' data-value={'L/R13'} onClick={(e) => setClicked(e)}>13</div>
+                                        <div className='seat' data-value={'L/R12'} onClick={(e) => setClicked(e)}>12</div>
+                                        <div className='seat' data-value={'L/R11'} onClick={(e) => setClicked(e)}>11</div>
+                                        <div className='seat' data-value={'L/R10'} onClick={(e) => setClicked(e)}>10</div>
+                                        <div className='seat' data-value={'L/R9'} onClick={(e) => setClicked(e)}>9</div>
+                                        <div className='seat' data-value={'L/R8'} onClick={(e) => setClicked(e)}>8</div>
+                                        <div className='seat' data-value={'L/R7'} onClick={(e) => setClicked(e)}>7</div>
+                                        <div className='seat' data-value={'L/R6'} onClick={(e) => setClicked(e)}>6</div>
+                                        <div className='seat' data-value={'L/R5'} onClick={(e) => setClicked(e)}>5</div>
+                                        <div className='seat' data-value={'L/R4'} onClick={(e) => setClicked(e)}>4</div>
+                                        <div className='seat' data-value={'L/R3'} onClick={(e) => setClicked(e)}>3</div>
+                                        <div className='seat' data-value={'L/R2'} onClick={(e) => setClicked(e)}>2</div>
+                                        <div className='seat' data-value={'L/R1'} onClick={(e) => setClicked(e)}>1</div>
                                     </div>
                                     <div className='d-flex'>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
+                                        <div className='seat' data-value={'M/R15'} onClick={(e) => setClicked(e)}>15</div>
+                                        <div className='seat' data-value={'M/R14'} onClick={(e) => setClicked(e)}>14</div>
+                                        <div className='seat' data-value={'M/R13'} onClick={(e) => setClicked(e)}>13</div>
+                                        <div className='seat' data-value={'M/R12'} onClick={(e) => setClicked(e)}>12</div>
+                                        <div className='seat' data-value={'M/R11'} onClick={(e) => setClicked(e)}>11</div>
+                                        <div className='seat' data-value={'M/R10'} onClick={(e) => setClicked(e)}>10</div>
+                                        <div className='seat' data-value={'M/R9'} onClick={(e) => setClicked(e)}>9</div>
+                                        <div className='seat' data-value={'M/R8'} onClick={(e) => setClicked(e)}>8</div>
+                                        <div className='seat' data-value={'M/R7'} onClick={(e) => setClicked(e)}>7</div>
+                                        <div className='seat' data-value={'M/R6'} onClick={(e) => setClicked(e)}>6</div>
+                                        <div className='seat' data-value={'M/R5'} onClick={(e) => setClicked(e)}>5</div>
+                                        <div className='seat' data-value={'M/R4'} onClick={(e) => setClicked(e)}>4</div>
+                                        <div className='seat' data-value={'M/R3'} onClick={(e) => setClicked(e)}>3</div>
+                                        <div className='seat' data-value={'M/R2'} onClick={(e) => setClicked(e)}>2</div>
+                                        <div className='seat' data-value={'M/R1'} onClick={(e) => setClicked(e)}>1</div>
                                     </div>
                                     <div className='d-flex'>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
+                                        <div className='seat' data-value={'N/R15'} onClick={(e) => setClicked(e)}>15</div>
+                                        <div className='seat' data-value={'N/R14'} onClick={(e) => setClicked(e)}>14</div>
+                                        <div className='seat' data-value={'N/R13'} onClick={(e) => setClicked(e)}>13</div>
+                                        <div className='seat' data-value={'N/R12'} onClick={(e) => setClicked(e)}>12</div>
+                                        <div className='seat' data-value={'N/R11'} onClick={(e) => setClicked(e)}>11</div>
+                                        <div className='seat' data-value={'N/R10'} onClick={(e) => setClicked(e)}>10</div>
+                                        <div className='seat' data-value={'N/R9'} onClick={(e) => setClicked(e)}>9</div>
+                                        <div className='seat' data-value={'N/R8'} onClick={(e) => setClicked(e)}>8</div>
+                                        <div className='seat' data-value={'N/R7'} onClick={(e) => setClicked(e)}>7</div>
+                                        <div className='seat' data-value={'N/R6'} onClick={(e) => setClicked(e)}>6</div>
+                                        <div className='seat' data-value={'N/R5'} onClick={(e) => setClicked(e)}>5</div>
+                                        <div className='seat' data-value={'N/R4'} onClick={(e) => setClicked(e)}>4</div>
+                                        <div className='seat' data-value={'N/R3'} onClick={(e) => setClicked(e)}>3</div>
+                                        <div className='seat' data-value={'N/R2'} onClick={(e) => setClicked(e)}>2</div>
+                                        <div className='seat' data-value={'N/R1'} onClick={(e) => setClicked(e)}>1</div>
                                     </div>
                                     <div className='d-flex'>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
+                                        <div className='seat' data-value={'O/R15'} onClick={(e) => setClicked(e)}>15</div>
+                                        <div className='seat' data-value={'O/R14'} onClick={(e) => setClicked(e)}>14</div>
+                                        <div className='seat' data-value={'O/R13'} onClick={(e) => setClicked(e)}>13</div>
+                                        <div className='seat' data-value={'O/R12'} onClick={(e) => setClicked(e)}>12</div>
+                                        <div className='seat' data-value={'O/R11'} onClick={(e) => setClicked(e)}>11</div>
+                                        <div className='seat' data-value={'O/R10'} onClick={(e) => setClicked(e)}>10</div>
+                                        <div className='seat' data-value={'O/R9'} onClick={(e) => setClicked(e)}>9</div>
+                                        <div className='seat' data-value={'O/R8'} onClick={(e) => setClicked(e)}>8</div>
+                                        <div className='seat' data-value={'O/R7'} onClick={(e) => setClicked(e)}>7</div>
+                                        <div className='seat' data-value={'O/R6'} onClick={(e) => setClicked(e)}>6</div>
+                                        <div className='seat' data-value={'O/R5'} onClick={(e) => setClicked(e)}>5</div>
+                                        <div className='seat' data-value={'O/R4'} onClick={(e) => setClicked(e)}>4</div>
+                                        <div className='seat' data-value={'O/R3'} onClick={(e) => setClicked(e)}>3</div>
+                                        <div className='seat' data-value={'O/R2'} onClick={(e) => setClicked(e)}>2</div>
+                                        <div className='seat' data-value={'O/R1'} onClick={(e) => setClicked(e)}>1</div>
                                     </div>
                                     <div className='d-flex'>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
+                                        <div className='seat' data-value={'P/R15'} onClick={(e) => setClicked(e)}>15</div>
+                                        <div className='seat' data-value={'P/R14'} onClick={(e) => setClicked(e)}>14</div>
+                                        <div className='seat' data-value={'P/R13'} onClick={(e) => setClicked(e)}>13</div>
+                                        <div className='seat' data-value={'P/R12'} onClick={(e) => setClicked(e)}>12</div>
+                                        <div className='seat' data-value={'P/R11'} onClick={(e) => setClicked(e)}>11</div>
+                                        <div className='seat' data-value={'P/R10'} onClick={(e) => setClicked(e)}>10</div>
+                                        <div className='seat' data-value={'P/R9'} onClick={(e) => setClicked(e)}>9</div>
+                                        <div className='seat' data-value={'P/R8'} onClick={(e) => setClicked(e)}>8</div>
+                                        <div className='seat' data-value={'P/R7'} onClick={(e) => setClicked(e)}>7</div>
+                                        <div className='seat' data-value={'P/R6'} onClick={(e) => setClicked(e)}>6</div>
+                                        <div className='seat' data-value={'P/R5'} onClick={(e) => setClicked(e)}>5</div>
+                                        <div className='seat' data-value={'P/R4'} onClick={(e) => setClicked(e)}>4</div>
+                                        <div className='seat' data-value={'P/R3'} onClick={(e) => setClicked(e)}>3</div>
+                                        <div className='seat' data-value={'P/R2'} onClick={(e) => setClicked(e)}>2</div>
+                                        <div className='seat' data-value={'P/R1'} onClick={(e) => setClicked(e)}>1</div>
                                     </div>
                                     <div className='d-flex'>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
+                                        <div className='seat' data-value={'Q/R15'} onClick={(e) => setClicked(e)}>15</div>
+                                        <div className='seat' data-value={'Q/R14'} onClick={(e) => setClicked(e)}>14</div>
+                                        <div className='seat' data-value={'Q/R13'} onClick={(e) => setClicked(e)}>13</div>
+                                        <div className='seat' data-value={'Q/R12'} onClick={(e) => setClicked(e)}>12</div>
+                                        <div className='seat' data-value={'Q/R11'} onClick={(e) => setClicked(e)}>11</div>
+                                        <div className='seat' data-value={'Q/R10'} onClick={(e) => setClicked(e)}>10</div>
+                                        <div className='seat' data-value={'Q/R9'} onClick={(e) => setClicked(e)}>9</div>
+                                        <div className='seat' data-value={'Q/R8'} onClick={(e) => setClicked(e)}>8</div>
+                                        <div className='seat' data-value={'Q/R7'} onClick={(e) => setClicked(e)}>7</div>
+                                        <div className='seat' data-value={'Q/R6'} onClick={(e) => setClicked(e)}>6</div>
+                                        <div className='seat' data-value={'Q/R5'} onClick={(e) => setClicked(e)}>5</div>
+                                        <div className='seat' data-value={'Q/R4'} onClick={(e) => setClicked(e)}>4</div>
+                                        <div className='seat' data-value={'Q/R3'} onClick={(e) => setClicked(e)}>3</div>
+                                        <div className='seat' data-value={'Q/R2'} onClick={(e) => setClicked(e)}>2</div>
+                                        <div className='seat' data-value={'Q/R1'} onClick={(e) => setClicked(e)}>1</div>
                                     </div>
                                     <div className='d-flex'>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
+                                        <div className='seat' data-value={'R/R15'} onClick={(e) => setClicked(e)}>15</div>
+                                        <div className='seat' data-value={'R/R14'} onClick={(e) => setClicked(e)}>14</div>
+                                        <div className='seat' data-value={'R/R13'} onClick={(e) => setClicked(e)}>13</div>
+                                        <div className='seat' data-value={'R/R12'} onClick={(e) => setClicked(e)}>12</div>
+                                        <div className='seat' data-value={'R/R11'} onClick={(e) => setClicked(e)}>11</div>
+                                        <div className='seat' data-value={'R/R10'} onClick={(e) => setClicked(e)}>10</div>
+                                        <div className='seat' data-value={'R/R9'} onClick={(e) => setClicked(e)}>9</div>
+                                        <div className='seat' data-value={'R/R8'} onClick={(e) => setClicked(e)}>8</div>
+                                        <div className='seat' data-value={'R/R7'} onClick={(e) => setClicked(e)}>7</div>
+                                        <div className='seat' data-value={'R/R6'} onClick={(e) => setClicked(e)}>6</div>
+                                        <div className='seat' data-value={'R/R5'} onClick={(e) => setClicked(e)}>5</div>
+                                        <div className='seat' data-value={'R/R4'} onClick={(e) => setClicked(e)}>4</div>
+                                        <div className='seat' data-value={'R/R3'} onClick={(e) => setClicked(e)}>3</div>
+                                        <div className='seat' data-value={'R/R2'} onClick={(e) => setClicked(e)}>2</div>
+                                        <div className='seat' data-value={'R/R1'} onClick={(e) => setClicked(e)}>1</div>
                                     </div>
                                     <div className='d-flex'>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
+                                        <div className='seat' data-value={'S/R15'} onClick={(e) => setClicked(e)}>15</div>
+                                        <div className='seat' data-value={'S/R14'} onClick={(e) => setClicked(e)}>14</div>
+                                        <div className='seat' data-value={'S/R13'} onClick={(e) => setClicked(e)}>13</div>
+                                        <div className='seat' data-value={'S/R12'} onClick={(e) => setClicked(e)}>12</div>
+                                        <div className='seat' data-value={'S/R11'} onClick={(e) => setClicked(e)}>11</div>
+                                        <div className='seat' data-value={'S/R10'} onClick={(e) => setClicked(e)}>10</div>
+                                        <div className='seat' data-value={'S/R9'} onClick={(e) => setClicked(e)}>9</div>
+                                        <div className='seat' data-value={'S/R8'} onClick={(e) => setClicked(e)}>8</div>
+                                        <div className='seat' data-value={'S/R7'} onClick={(e) => setClicked(e)}>7</div>
+                                        <div className='seat' data-value={'S/R6'} onClick={(e) => setClicked(e)}>6</div>
+                                        <div className='seat' data-value={'S/R5'} onClick={(e) => setClicked(e)}>5</div>
+                                        <div className='seat' data-value={'S/R4'} onClick={(e) => setClicked(e)}>4</div>
+                                        <div className='seat' data-value={'S/R3'} onClick={(e) => setClicked(e)}>3</div>
+                                        <div className='seat' data-value={'S/R2'} onClick={(e) => setClicked(e)}>2</div>
+                                        <div className='seat' data-value={'S/R1'} onClick={(e) => setClicked(e)}>1</div>
                                     </div>
                                     <div className='d-flex'>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
-                                        <div className='seat'></div>
+                                        <div className='seat' data-value={'T/R15'} onClick={(e) => setClicked(e)}>15</div>
+                                        <div className='seat' data-value={'T/R14'} onClick={(e) => setClicked(e)}>14</div>
+                                        <div className='seat' data-value={'T/R13'} onClick={(e) => setClicked(e)}>13</div>
+                                        <div className='seat' data-value={'T/R12'} onClick={(e) => setClicked(e)}>12</div>
+                                        <div className='seat' data-value={'T/R11'} onClick={(e) => setClicked(e)}>11</div>
+                                        <div className='seat' data-value={'T/R10'} onClick={(e) => setClicked(e)}>10</div>
+                                        <div className='seat' data-value={'T/R9'} onClick={(e) => setClicked(e)}>9</div>
+                                        <div className='seat' data-value={'T/R8'} onClick={(e) => setClicked(e)}>8</div>
+                                        <div className='seat' data-value={'T/R7'} onClick={(e) => setClicked(e)}>7</div>
+                                        <div className='seat' data-value={'T/R6'} onClick={(e) => setClicked(e)}>6</div>
+                                        <div className='seat' data-value={'T/R5'} onClick={(e) => setClicked(e)}>5</div>
+                                        <div className='seat' data-value={'T/R4'} onClick={(e) => setClicked(e)}>4</div>
+                                        <div className='seat' data-value={'T/R3'} onClick={(e) => setClicked(e)}>3</div>
+                                        <div className='seat' data-value={'T/R2'} onClick={(e) => setClicked(e)}>2</div>
+                                        <div className='seat' data-value={'T/R1'} onClick={(e) => setClicked(e)}>1</div>
                                     </div>
                                 </div>
                             </div>
@@ -771,8 +809,10 @@ const Auditorium_1 = ({ ticketBasket, paymentMethod, movieNumber, currentAud }) 
                     </div>
                 </div>
             </div>
+            <TicketMenu back={() => setCurrentAud(0)} tickets={tickets} onClick={(e) => genericHandleTicketClicked(e)}/>
         </>
     )
 }
 
 export default Auditorium_1
+

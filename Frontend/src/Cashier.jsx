@@ -73,7 +73,6 @@ function Cashier() {
     const [currentAud, setCurrentAud] = useState(0);
     const [currentSerialNumber, setCurrentSerialNumber] = useState(0);
 
-
     useEffect(() => {
         localStorage.setItem('totalCash', JSON.stringify(totalCash));
         localStorage.setItem('totalCredit', JSON.stringify(totalCredit));
@@ -87,25 +86,6 @@ function Cashier() {
         {title: 'Avatar: The Way Of Water', startingTime: '21:30', classification: 16, seats: 128, aud: 1, number: 3},
         {title: 'The Conjuring', startingTime: '22:30', classification: 18, seats: 128, aud: 1, number: 4}
     ];
-
-    function genericHandleTicketClicked(newTicket) {
-        HandleItemClicked( 
-            newTicket, 
-            transactionInprogress, 
-            paymentMethod, 
-            setTransactionInprogress, 
-            setPaymentMethod, 
-            setTicketClicked, 
-            setTicketIsClicked, 
-            setTicketBasket, 
-            setDisplayTransaction, 
-            setPrice, 
-            setAmountReceived, 
-            setChange, 
-            setBanknoteWasClicked
-        );
-        console.log('HandleItemClicked()')
-    }
 
     function Withdrawal() {
         if (amountReceived > 0) {
@@ -414,24 +394,26 @@ function Cashier() {
         if (currentAud === 1) {
             setDisplayAuditorium(
                 <>
-                    <Auditorium_1 ticketBasket={ticketBasket} paymentMethod={paymentMethod} movieNumber={currentSerialNumber} currentAud={currentAud}/>
-                    <TicketMenu back={() => setCurrentAud(0)} tickets={tickets} onClick={(e) => genericHandleTicketClicked(e)}/>
-                </>
-            );
-        }
-        if (currentAud === 2) {
-            setDisplayAuditorium(
-                <>
-                    <Auditorium_2 ticketBasket={ticketBasket} paymentMethod={paymentMethod} movieNumber={currentSerialNumber}/>
-                    <TicketMenu back={() => setCurrentAud(0)} tickets={tickets} onClick={(e) => genericHandleTicketClicked(e)}/>
-                </>
-            );
-        }
-        if (currentAud === 3) {
-            setDisplayAuditorium(
-                <>
-                    <Auditorium_3 ticketBasket={ticketBasket} paymentMethod={paymentMethod} movieNumber={currentSerialNumber}/>
-                    <TicketMenu back={() => setCurrentAud(0)} tickets={tickets} onClick={(e) => genericHandleTicketClicked(e)}/>
+                    <Auditorium_1 
+                        ticketBasket={ticketBasket} 
+                        paymentMethod={paymentMethod} 
+                        movieNumber={currentSerialNumber} 
+                        currentAud={currentAud} 
+                        tickets={tickets} 
+                        setCurrentAud={setCurrentAud} 
+                        transactionInprogress={transactionInprogress}
+                        setTransactionInprogress={setTransactionInprogress}
+                        setPaymentMethod={setPaymentMethod}
+                        setTicketClicked={setTicketClicked}
+                        setTicketIsClicked={setTicketIsClicked}
+                        setTicketBasket={setTicketBasket}
+                        setDisplayTransaction={setDisplayTransaction}
+                        setPrice={setPrice}
+                        setAmountReceived={setAmountReceived}
+                        setChange={setChange}
+                        setBanknoteWasClicked={setBanknoteWasClicked}
+                    />
+                    
                 </>
             );
         }

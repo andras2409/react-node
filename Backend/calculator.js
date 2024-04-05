@@ -84,6 +84,13 @@ export function SaveItems(basket, totalItemList) {
     }
 }
 
+export function SaveTickets(soldSeats, savedSeats) {
+    for (let i = 0; i < soldSeats.length; i++) {
+        savedSeats.push(soldSeats[i]);
+        console.log('seats saved');
+    }
+}
+
 export function DeleteLocalStorage() {
     localStorage.clear();
 }
