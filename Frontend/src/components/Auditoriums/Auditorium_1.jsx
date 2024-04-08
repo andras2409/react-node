@@ -92,6 +92,7 @@ const Auditorium_1 = ({ ticketBasket, paymentMethod, movieNumber, currentAud, ti
     return (
         <>
             <div className='d-flex flex-fill justify-content-center align-items-center bg-dark'>
+                
                 <div className='d-flex flex-column col-1 text-white'>
                     <div className='d-flex flex-column justify-content-center mb-5'>
                         <div>Aud: {currentAud}</div>

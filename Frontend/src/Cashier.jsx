@@ -417,6 +417,58 @@ function Cashier() {
                 </>
             );
         }
+        if (currentAud === 2) {
+            setDisplayAuditorium(
+                <>
+                    <Auditorium_2 
+                        ticketBasket={ticketBasket} 
+                        paymentMethod={paymentMethod} 
+                        movieNumber={currentSerialNumber} 
+                        currentAud={currentAud} 
+                        tickets={tickets} 
+                        setCurrentAud={setCurrentAud} 
+                        transactionInprogress={transactionInprogress}
+                        setTransactionInprogress={setTransactionInprogress}
+                        setPaymentMethod={setPaymentMethod}
+                        setTicketClicked={setTicketClicked}
+                        setTicketIsClicked={setTicketIsClicked}
+                        setTicketBasket={setTicketBasket}
+                        setDisplayTransaction={setDisplayTransaction}
+                        setPrice={setPrice}
+                        setAmountReceived={setAmountReceived}
+                        setChange={setChange}
+                        setBanknoteWasClicked={setBanknoteWasClicked}
+                    />
+                    
+                </>
+            );
+        }
+        if (currentAud === 3) {
+            setDisplayAuditorium(
+                <>
+                    <Auditorium_3
+                        ticketBasket={ticketBasket} 
+                        paymentMethod={paymentMethod} 
+                        movieNumber={currentSerialNumber} 
+                        currentAud={currentAud} 
+                        tickets={tickets} 
+                        setCurrentAud={setCurrentAud} 
+                        transactionInprogress={transactionInprogress}
+                        setTransactionInprogress={setTransactionInprogress}
+                        setPaymentMethod={setPaymentMethod}
+                        setTicketClicked={setTicketClicked}
+                        setTicketIsClicked={setTicketIsClicked}
+                        setTicketBasket={setTicketBasket}
+                        setDisplayTransaction={setDisplayTransaction}
+                        setPrice={setPrice}
+                        setAmountReceived={setAmountReceived}
+                        setChange={setChange}
+                        setBanknoteWasClicked={setBanknoteWasClicked}
+                    />
+                    
+                </>
+            );
+        }
     },[currentAud, paymentMethod, ticketBasket]);
 
     if (currentPage === 'back-to-main') {
