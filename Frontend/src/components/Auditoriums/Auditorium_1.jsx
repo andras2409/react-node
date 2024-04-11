@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import TicketMenu from '../TicketMenu';
-import { HandleItemClicked, SaveTickets } from '../../../../Backend/calculator';
+import { HandleItemClicked, SaveTickets } from '../../calculator';
 
 const Auditorium_1 = ({ ticketBasket, paymentMethod, movieNumber, currentAud, tickets, setCurrentAud, transactionInprogress, setTransactionInprogress, setPaymentMethod, setTicketClicked, setTicketIsClicked, setTicketBasket, setDisplayTransaction, setPrice, setAmountReceived, setChange, setBanknoteWasClicked }) => {
 
@@ -94,7 +94,7 @@ const Auditorium_1 = ({ ticketBasket, paymentMethod, movieNumber, currentAud, ti
             <div className='d-flex flex-fill justify-content-center align-items-center bg-dark'>
                 
                 <div className='d-flex flex-column col-1 text-white'>
-                    <div className='d-flex flex-column justify-content-center mb-5'>
+                    <div className='d-flex flex-column justify-content-center align-items-center mb-5'>
                         <div>Aud: {currentAud}</div>
                         <div>Movie: {movieNumber}</div>
                     </div>
@@ -147,7 +147,7 @@ const Auditorium_1 = ({ ticketBasket, paymentMethod, movieNumber, currentAud, ti
                             <div className='d-flex mb-4'>
                                 <div className="sector me-3">
                                     <div className='d-flex justify-content-end'>
-                                        <div className='seat' onLoad={(e) => handleType(e)} data-value={'A/L1'} onClick={(e) => setClicked(e)}>1</div>
+                                        <div className='seat' data-value={'A/L1'} onClick={(e) => setClicked(e)}>1</div>
                                         <div className='seat' data-value={'A/L2'} onClick={(e) => setClicked(e)}>2</div>
                                         <div className='seat' data-value={'A/L3'} onClick={(e) => setClicked(e)}>3</div>
                                         <div className='seat' data-value={'A/L4'} onClick={(e) => setClicked(e)}>4</div>

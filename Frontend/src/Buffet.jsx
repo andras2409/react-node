@@ -17,7 +17,7 @@ import {
     BanknoteClicked,
     HandleKeypadClicked,
     HandleItemClicked
-} from '../../Backend/calculator.js';
+} from './calculator.js';
 import Trash from './components/Trash.jsx';
 import Keypad from './components/Keypad.jsx';
 import BankNoteButtons from './components/BankNoteButtons.jsx';
@@ -346,7 +346,7 @@ function Buffet() {
     if (currentPage === 'back-to-main') {
         return <MainMenu />;
     } else if (currentPage === 'summary') {
-        return <Summary />;
+        return <Summary homepage="Buffet" />;
     }
 
     return (

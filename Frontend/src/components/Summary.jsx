@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react'
 import Navigation from './Navigation'
 import Button from './Button'
 import Buffet from '../Buffet'
+import Cashier from '../Cashier'
 
-const Summary = () => {
+const Summary = ( props ) => {
 
     const [currentPage, setCurrentPage] = useState('Main Menu');
 
@@ -13,14 +14,18 @@ const Summary = () => {
     const [totalWithdrawal, setTotalWithdrawal] = useState(() => JSON.parse(localStorage.getItem('totalWithdrawal')) || 0);
     const [totalDeposit, setTotalDeposit] = useState(() => JSON.parse(localStorage.getItem('totalDeposit')) || 0);
 
-    if (currentPage === 'buffet') {
+    if (currentPage === 'Buffet') {
         return <Buffet />;
+    }
+
+    if (currentPage === 'Cashier') {
+        return <Cashier />;
     }
 
     return (
         <>
             <Navigation>
-                <Button id='buffet' className='btn btn-primary fs-4 mb-1' onClick={() => setCurrentPage('buffet')}>Buffet</Button>
+                <Button className='btn btn-primary fs-4 mb-1' onClick={() => setCurrentPage(props.homepage)}>{props.homepage}</Button>
             </Navigation>
             <div className='col-6 p-4'>
                 <div className="d-flex col-15">

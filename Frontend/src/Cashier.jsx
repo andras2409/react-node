@@ -13,18 +13,15 @@ import {
     DeleteLocalStorage, 
     BanknoteClicked,
     HandleKeypadClicked,
-    HandleItemClicked,
     ItemClicked,
     IncreaseItemAmount,
     DecreaseItemAmount,
     DeleteItem
-} from '../../Backend/calculator.js';
+} from './calculator.js';
 import Summary from './components/Summary.jsx';
 import MovieButton from './components/MovieButton.jsx';
 import Auditorium_1 from './components/Auditoriums/Auditorium_1.jsx';
 import Auditorium_2 from './components/Auditoriums/Auditorium_2.jsx';
-import Auditorium_3 from './components/Auditoriums/Auditorium_3.jsx';
-import TicketMenu from './components/TicketMenu.jsx';
 import Trash from './components/Trash.jsx';
 
 function Cashier() {
@@ -373,21 +370,6 @@ function Cashier() {
                             />
                         ))}
                     </div>
-                    <div className='d-flex justify-content-start p-1 pt-0'>
-                        {roomOne.map((movie, index) => (
-                            <MovieButton 
-                                key={index}
-                                title={movie.title}
-                                startingTime={movie.startingTime}
-                                classification={movie.classification}
-                                seats={movie.seats}
-                                onClick={() => {
-                                    setCurrentAud(3);
-                                    setCurrentSerialNumber(movie.number);
-                                }}
-                            />
-                        ))}
-                    </div>
                 </>
             );
         }
@@ -443,38 +425,12 @@ function Cashier() {
                 </>
             );
         }
-        if (currentAud === 3) {
-            setDisplayAuditorium(
-                <>
-                    <Auditorium_3
-                        ticketBasket={ticketBasket} 
-                        paymentMethod={paymentMethod} 
-                        movieNumber={currentSerialNumber} 
-                        currentAud={currentAud} 
-                        tickets={tickets} 
-                        setCurrentAud={setCurrentAud} 
-                        transactionInprogress={transactionInprogress}
-                        setTransactionInprogress={setTransactionInprogress}
-                        setPaymentMethod={setPaymentMethod}
-                        setTicketClicked={setTicketClicked}
-                        setTicketIsClicked={setTicketIsClicked}
-                        setTicketBasket={setTicketBasket}
-                        setDisplayTransaction={setDisplayTransaction}
-                        setPrice={setPrice}
-                        setAmountReceived={setAmountReceived}
-                        setChange={setChange}
-                        setBanknoteWasClicked={setBanknoteWasClicked}
-                    />
-                    
-                </>
-            );
-        }
     },[currentAud, paymentMethod, ticketBasket]);
 
     if (currentPage === 'back-to-main') {
         return <MainMenu />;
     } else if (currentPage === 'summary') {
-        return <Summary />
+        return <Summary homepage="Cashier" />
     }
 
     return (
@@ -489,7 +445,7 @@ function Cashier() {
                         topButton={
                             <DropdownButton buttonClass={'m-1 pt-2 pb-2'} title={currentPage}>
                                 <Button id={'back-to-main'} className={'btn btn-outline-primary m-2 p-2 fs-5'} onClick={() => setCurrentPage('back-to-main')}>Back To Main Menu</Button>
-                                <Button id={'back-to-main'} className={'btn btn-outline-primary m-2 p-2 fs-5'} onClick={() => setCurrentPage('summary')}>Summary</Button>
+                                <Button id={'back-to-main'} className={'btn btn-outline-primary m-2 p-2 fs-5'} onClick={() => setCurrentPage('summary')} >Summary</Button>
                             </DropdownButton>
                         }
                         onClick={(e) => BanknoteClicked(e, transactionInprogress, price, setBanknoteWasClicked, setAmountReceived, setChange, setTransactionInprogress, setPaymentMethod, paymentMethod, setTicketBasket, setPrice, setDisplayTransaction)}

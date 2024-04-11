@@ -1,7 +1,7 @@
 import React from 'react'
 import { useEffect, useState } from 'react'
 import TicketMenu from '../TicketMenu';
-import { HandleItemClicked, SaveTickets } from '../../../../Backend/calculator';
+import { HandleItemClicked, SaveTickets } from '../../calculator';
 
 const Auditorium_2 = ({ ticketBasket, paymentMethod, movieNumber, currentAud, tickets, setCurrentAud, transactionInprogress, setTransactionInprogress, setPaymentMethod, setTicketClicked, setTicketIsClicked, setTicketBasket, setDisplayTransaction, setPrice, setAmountReceived, setChange, setBanknoteWasClicked }) => {
 
@@ -95,7 +95,7 @@ const Auditorium_2 = ({ ticketBasket, paymentMethod, movieNumber, currentAud, ti
             <div className='d-flex flex-fill justify-content-center align-items-center bg-dark'>
 
                 <div className='d-flex flex-column col-1 text-white'>
-                    <div className='d-flex flex-column justify-content-center mb-5'>
+                    <div className='d-flex flex-column justify-content-center align-items-center mb-5'>
                         <div>Aud: {currentAud}</div>
                         <div>Movie: {movieNumber}</div>
                     </div>
